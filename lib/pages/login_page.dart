@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:utdtutors/services/auth_service.dart';
 import 'package:utdtutors/widgets/round_text_field.dart';
 
 class LoginPage extends StatefulWidget {
@@ -30,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 const SizedBox(height: 64),
                 _welcomeBack(),
+                const SizedBox(height: 16),
                 _pleaseSignIn(),
                 const SizedBox(height: 64),
                 register ? _nameField(controller: nameController) : Container(),
@@ -50,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _welcomeBack() {
-    return Text('Welcome Back', style: Theme.of(context).textTheme.headline2);
+    return Text('UTD Match', style: Theme.of(context).textTheme.headline2);
   }
 
   Widget _pleaseSignIn() {
@@ -58,29 +61,35 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _nameField({TextEditingController? controller}) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.person),
         label: Text('Full Name'),
       ),
       keyboardType: TextInputType.name,
+      validator: (value) {
+        return (value == null || value.isEmpty) ? '' : null;
+      },
     );
   }
 
   Widget _emailField({TextEditingController? controller}) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.email),
         label: Text('Email Address'),
       ),
       keyboardType: TextInputType.emailAddress,
+      validator: (value) {
+        return (value == null || value.isEmpty) ? '' : null;
+      },
     );
   }
 
   Widget _passwordField({TextEditingController? controller}) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.lock),
@@ -88,6 +97,9 @@ class _LoginPageState extends State<LoginPage> {
       ),
       keyboardType: TextInputType.visiblePassword,
       obscureText: true,
+      validator: (value) {
+        return (value == null || value.length < 6) ? '' : null;
+      },
     );
   }
 
@@ -101,13 +113,16 @@ class _LoginPageState extends State<LoginPage> {
               _formKey.currentState!.validate()) {
             final provider = Provider.of<AuthService>(context, listen: false);
 
-            if (widget.register) {
+            if (register) {
               provider.registerWithEmailAndPassword(
-                  name.text, email.text, password.text,
-                  setError: _setError);
+                emailController.text,
+                passwordController.text,
+              );
             } else {
-              provider.signInWithEmailAndPassword(email.text, password.text,
-                  setError: _setError);
+              provider.signInWithEmailAndPassword(
+                emailController.text,
+                passwordController.text,
+              );
             }
           }
         },

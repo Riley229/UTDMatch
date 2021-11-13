@@ -1,9 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'package:utdtutors/pages/home_page.dart';
-import 'package:utdtutors/pages/login_page.dart';
+import 'package:utdtutors/pages/landing_page.dart';
+import 'package:utdtutors/services/auth_service.dart';
+import 'package:utdtutors/services/data_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -12,50 +18,82 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'UTD Match',
-      theme: ThemeData(
-        primaryColor: const Color(0xFF2DE4C5),
-        primarySwatch: _createMaterialColor(const Color(0xFF2DE4C5)),
-        colorScheme: ColorScheme.fromSwatch(
-          brightness: Brightness.dark,
-          primarySwatch: _createMaterialColor(
-            const Color(0xFF2DE4C5),
+    return MultiProvider(
+      providers: [
+        Provider(
+          create: (context) => AuthService(),
+        ),
+        Provider(
+          create: (context) => DataService(),
+        ),
+        StreamProvider(
+          create: (context) => context.read<AuthService>().authState,
+          initialData: null,
+        ),
+        StreamProvider(
+          create: (context) => context.read<DataService>().userState,
+          initialData: null,
+        ),
+      ],
+      child: MaterialApp(
+        home: const LandingPage(),
+        debugShowCheckedModeBanner: false,
+        title: 'UTD Match',
+        theme: ThemeData(
+          primaryColor: const Color(0xFF2DE4C5),
+          primarySwatch: _createMaterialColor(const Color(0xFF2DE4C5)),
+          colorScheme: ColorScheme.fromSwatch(
+            brightness: Brightness.dark,
+            primarySwatch: _createMaterialColor(
+              const Color(0xFF2DE4C5),
+            ),
+            errorColor: Colors.orange,
+          ).copyWith(
+            secondary: const Color(0xFF2DE4C5),
+            onSecondary: Colors.white,
           ),
-        ).copyWith(
-          secondary: const Color(0xFF2DE4C5),
-          onSecondary: Colors.white,
-        ),
-        scaffoldBackgroundColor: const Color(0xFF2A2D37),
-        textTheme: const TextTheme(
-          headline1: TextStyle(fontSize: 45, fontWeight: FontWeight.w700),
-          headline2: TextStyle(fontSize: 40, fontWeight: FontWeight.w500),
-          headline3: TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
-          subtitle1: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.w300), //Text Form Fields
-          subtitle2: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
-        ),
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(100),
+          scaffoldBackgroundColor: const Color(0xFF2A2D37),
+          textTheme: const TextTheme(
+            headline1: TextStyle(fontSize: 50, fontWeight: FontWeight.w700),
+            headline2: TextStyle(fontSize: 45, fontWeight: FontWeight.w500),
+            headline3: TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
+            subtitle1: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.w300), //Text Form Fields
+            subtitle2: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+          ),
+          inputDecorationTheme: const InputDecorationTheme(
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(100),
+              ),
+              borderSide: BorderSide(color: Colors.orange),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(100),
+              ),
+              borderSide: BorderSide(color: Colors.orange),
+            ),
+            errorStyle: TextStyle(height: 0, color: Colors.orange),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(100),
+              ),
             ),
           ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(100),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+              ),
+              padding: const EdgeInsets.all(16),
+              textStyle:
+                  const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
             ),
-            padding: const EdgeInsets.all(16),
-            textStyle:
-                const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
           ),
         ),
       ),
-      home: const LoginPage(),
     );
   }
 }
