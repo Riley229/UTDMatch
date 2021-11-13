@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utdtutors/services/auth_service.dart';
-import 'package:utdtutors/widgets/round_text_field.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -37,9 +36,9 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 64),
                 register ? _nameField(controller: nameController) : Container(),
                 register ? const SizedBox(height: 32) : Container(),
-                _emailField(),
+                _emailField(controller: emailController),
                 const SizedBox(height: 32),
-                _passwordField(),
+                _passwordField(controller: passwordController),
                 const SizedBox(height: 64),
                 _loginButton(),
                 const SizedBox(height: 32),
@@ -110,17 +109,19 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () async {
           if (_formKey.currentState != null &&
               _formKey.currentState!.validate()) {
-            final provider = Provider.of<AuthService>(context, listen: false);
+            AuthService authService = Provider.of<AuthService>(context, listen: false);
 
             if (register) {
-              provider.registerWithEmailAndPassword(
-                emailController.text,
-                passwordController.text,
+              await authService.register(
+                context: context,
+                name: nameController.text,
+                email: emailController.text,
+                password: passwordController.text,
               );
             } else {
-              provider.signInWithEmailAndPassword(
-                emailController.text,
-                passwordController.text,
+              authService.signIn(
+                email: emailController.text,
+                password: passwordController.text,
               );
             }
           }
