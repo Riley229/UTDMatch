@@ -6,7 +6,7 @@ class AuthService {
 
   Stream<User?> get authState => _auth.authStateChanges();
 
-  void registerWithEmailAndPassword(String email, String password) async {
+  Future registerWithEmailAndPassword(String email, String password) async {
     try {
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
     } catch (error) {
@@ -14,7 +14,7 @@ class AuthService {
     }
   }
 
-  void signInWithEmailAndPassword(String email, String password) async {
+  Future signInWithEmailAndPassword(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } catch (error) {
@@ -22,7 +22,7 @@ class AuthService {
     }
   }
 
-  void signOut() async {
+  Future signOut() async {
     _auth.signOut();
   }
 }

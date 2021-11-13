@@ -6,7 +6,10 @@ class AppUser {
   String id;
   String name;
 
-  AppUser({required this.id, required this.name});
+  AppUser({
+    required this.id,
+    required this.name,
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -22,9 +25,10 @@ class AppUser {
     );
   }
 
-  factory AppUser.fromFirestore(DocumentSnapshot documentSnapshot) {
-    AppUser user = AppUser.fromJson(documentSnapshot.data as Map<String, dynamic>);
-    user.id = documentSnapshot.id;
+  factory AppUser.fromFirestore(DocumentSnapshot document) {
+    AppUser user =
+        AppUser.fromJson(document.data as Map<String, dynamic>);
+    user.id = document.id;
     return user;
   }
 }
