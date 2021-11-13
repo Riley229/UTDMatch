@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _LoginPageState extends State<LoginPage> {
+  bool register = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,10 +19,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              height: 64,
-              color: Colors.red,
-            ),
+            Text('Welcome Back', style: Theme.of(context).textTheme.headline1),
           ],
         ),
       ),
