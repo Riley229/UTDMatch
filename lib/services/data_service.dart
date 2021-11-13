@@ -33,16 +33,21 @@ class DataService {
     });
   }
 
-  void setCurrentUser(String? id) {
+  Future setCurrentUser(String? id) async {
     _currentUserSubscription?.cancel();
     currentUser = null;
 
     if (id != null) {
       DocumentReference user = _userCollection.doc(id);
+      bool userExists = false;
 
-      user.snapshots().listen((document) {
-        currentUser = AppUser.fromFirestore(document);
-      });
+      await user.get().then((document) => userExists = document.exists);
+
+      if (userExists) {
+        user.snapshots().listen((document) {
+          currentUser = AppUser.fromFirestore(document);
+        });
+      }
     }
   }
 }
