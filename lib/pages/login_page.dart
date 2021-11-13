@@ -95,7 +95,6 @@ class _LoginPageState extends State<LoginPage> {
         prefixIcon: Icon(Icons.lock),
         label: Text('Password'),
       ),
-      keyboardType: TextInputType.visiblePassword,
       obscureText: true,
       validator: (value) {
         return (value == null || value.length < 6) ? '' : null;

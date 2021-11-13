@@ -12,6 +12,13 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  int _selectedIndex = 0;
+
+  final pages = const [
+    HomePage(),
+    LoginPage(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final authUser = context.watch<User?>();
@@ -20,6 +27,30 @@ class _LandingPageState extends State<LandingPage> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: (authUser != null) ? const HomePage() : const LoginPage(),
+      bottomNavigationBar: (authUser != null)
+          ? BottomNavigationBar(
+              elevation: 0,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle),
+                  label: 'Profile',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Theme.of(context).colorScheme.primary,
+              onTap: _onItemTapped,
+            )
+          : null,
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }
