@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utdtutors/pages/home_page.dart';
 import 'package:utdtutors/pages/login_page.dart';
+import 'package:utdtutors/pages/profile_page.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -12,11 +13,11 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   final pages = const [
+    ProfilePage(),
     HomePage(),
-    LoginPage(),
   ];
 
   @override
@@ -26,7 +27,7 @@ class _LandingPageState extends State<LandingPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: (authUser != null) ? const HomePage() : const LoginPage(),
+      body: (authUser != null) ? pages[_selectedIndex] : const LoginPage(),
       bottomNavigationBar: (authUser != null)
           ? BottomNavigationBar(
               elevation: 0,
