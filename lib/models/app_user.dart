@@ -43,7 +43,6 @@ class AppUser {
 
   String get classificationName => classifications[classification] ?? 'Unknown';
   Widget get avatar => getAvatar(profilePic, name);
-  
 
   AppUser({
     required this.id,
