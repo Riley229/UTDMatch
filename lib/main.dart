@@ -65,8 +65,9 @@ class MyApp extends StatelessWidget {
             textTheme: const TextTheme(
               headline1: TextStyle(fontSize: 50, fontWeight: FontWeight.w700),
               headline2: TextStyle(fontSize: 45, fontWeight: FontWeight.w500),
-              headline3: TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
-              headline4: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+              headline3: TextStyle(fontSize: 35, fontWeight: FontWeight.w300),
+              headline4: TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
+              headline5: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
               subtitle1: TextStyle(
                   fontSize: 20, fontWeight: FontWeight.w300), //Text Form Fields
               subtitle2: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),

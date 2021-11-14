@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:utdtutors/models/app_user.dart';
 import 'package:utdtutors/pages/course_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,13 +26,17 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
         child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              _findTutors(),
-              _selectACourse(),
-              _courses(),
-            ],
+          child: Consumer<AppUser?>(
+            builder: (context, appUser, child) {
+              return Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  _findTutors(),
+                  _selectACourse(),
+                  _courses(appUser?.courses ?? {}),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -46,20 +52,21 @@ class _HomePageState extends State<HomePage> {
         style: Theme.of(context).textTheme.headline4);
   }
 
-  Widget _courses() {
+  Widget _courses(Map<String, int> courses) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
-      itemCount: profileCourses.length,
+      itemCount: courses.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
           leading: const Icon(Icons.book),
-          title: Text(profileCourses[index]),
+          title: Text(courses.keys.elementAt(index)),
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CoursePage(course: profileCourses[index]),
+                builder: (context) =>
+                    CoursePage(course: courses.keys.elementAt(index)),
               ),
             );
           },

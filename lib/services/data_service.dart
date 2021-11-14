@@ -59,8 +59,24 @@ class DataService {
 
   Future updateCurrentUser(Map<String, dynamic> data) async {
     if (currentUser == null) return;
-    
+
     DocumentReference user = _userCollection.doc(currentUser!.id);
     await user.update(data);
+  }
+
+  Future getTutorsForCourse(String courseName) async {
+    List<AppUser> tutors = [];
+
+    _userCollection
+        .where('courses.$courseName', isLessThan: 4)
+        .get()
+        .then((query) => {
+              for (var document in query.docs) {
+                  if (document.id != currentUser?.id)
+                    tutors.add(AppUser.fromFirestore(document))
+                }
+            });
+
+    return tutors;
   }
 }

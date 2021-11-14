@@ -8,33 +8,83 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    final size = MediaQuery.of(context).size;
+
+    return Column(
       children: [
-        ShaderMask(
-          blendMode: BlendMode.darken,
-          shaderCallback: (Rect bounds) => const LinearGradient(
-            colors: [Colors.transparent, Colors.black45],
-            begin: Alignment.center,
-            end: Alignment.bottomCenter,
-          ).createShader(bounds),
-          child: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                    'http://i.ebayimg.com/images/g/Tw4AAOxyTjNSgMig/s-l500.jpg'),
-                fit: BoxFit.cover,
-              ),
+        Container(
+          width: size.width * .8,
+          height: size.height * .5,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            image: const DecorationImage(
+              image: NetworkImage(
+                  'http://i.ebayimg.com/images/g/Tw4AAOxyTjNSgMig/s-l500.jpg'),
+              fit: BoxFit.cover,
             ),
           ),
-        ),
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: Text(
-            user.name,
-            style: Theme.of(context).textTheme.headline2,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: const [
+                BoxShadow(color: Colors.black12),
+              ],
+              gradient: const LinearGradient(
+                colors: [Colors.transparent, Colors.black45],
+                begin: Alignment.center,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: _userInfo(context),
           ),
-        )
+        ),
+        _courses(context),
       ],
+    );
+  }
+
+  Widget _userInfo(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomLeft,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: user.name,
+                style: Theme.of(context).textTheme.headline2,
+              ),
+              const TextSpan(
+                text: '\n',
+              ),
+              TextSpan(
+                text: '${user.major} Major',
+                style: Theme.of(context).textTheme.headline5,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _courses(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Container(
+      width: size.width * .8,
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Column(
+        children: List.generate(
+          user.courses.length,
+          (index) {
+            return Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(user.courses.keys.elementAt(index)),
+            );
+          },
+        ),
+      ),
     );
   }
 }
