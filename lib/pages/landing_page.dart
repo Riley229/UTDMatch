@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:utdtutors/pages/home_page.dart';
 import 'package:utdtutors/pages/login_page.dart';
 import 'package:utdtutors/pages/profile_page.dart';
+import 'package:utdtutors/services/data_service.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -22,7 +23,9 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authUser = context.watch<User?>();
+    User? authUser = context.watch<User?>();
+    DataService dataService = context.watch<DataService>();
+    dataService.setCurrentUser(authUser?.uid);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -43,16 +46,9 @@ class _LandingPageState extends State<LandingPage> {
               ],
               currentIndex: _selectedIndex,
               selectedItemColor: Theme.of(context).colorScheme.primary,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              onTap: _onItemTapped,
+              onTap: (index) => setState(() => _selectedIndex = index),
             )
           : null,
     );
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 }
