@@ -76,18 +76,18 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _profileClassification(String profileClassification) {
     return Text(profileClassification,
-        style: Theme.of(context).textTheme.headline4);
+        style: Theme.of(context).textTheme.headline5);
   }
 
   Widget _profileMajor(String profileMajor) {
-    return Text(profileMajor, style: Theme.of(context).textTheme.headline3);
+    return Text(profileMajor, style: Theme.of(context).textTheme.headline4);
   }
 
   Widget _courses(Map<String, int> courses) {
     return Column(
       children: [
         ListTile(
-          title: Text('Courses', style: Theme.of(context).textTheme.headline3),
+          title: Text('Courses', style: Theme.of(context).textTheme.headline4),
           trailing: IconButton(
             icon: const Icon(Icons.info),
             onPressed: () {
