@@ -34,6 +34,7 @@ class DataService {
     required String name,
     required String major,
     required int classification,
+    required String email,
   }) async {
     DocumentReference user = _userCollection.doc(id);
 
@@ -42,6 +43,7 @@ class DataService {
       'name': name,
       'major': major,
       'classification': classification,
+      'email': email,
       'courses': {},
       'tutors': [],
     });

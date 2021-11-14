@@ -140,8 +140,14 @@ class _CoursePageState extends State<CoursePage> {
           Provider.of<DataService>(context, listen: false);
     AppUser? currentUser = Provider.of<AppUser?>(context, listen: false);
 
-    tutors = await dataService.getTutorsForCourse(widget.course);
+    List<AppUser> courseTutors = await dataService.getTutorsForCourse(widget.course);
     Future.delayed(const Duration(milliseconds: 200), () {
+      tutors = [];
+      courseTutors.forEach((tutor) {
+        if (currentUser != null && !currentUser.tutors.contains(tutor.id)) {
+          tutors?.add(tutor);
+        }
+      });
       setState(() {});
     });
   }

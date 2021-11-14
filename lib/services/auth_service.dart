@@ -29,6 +29,7 @@ class AuthService {
               name: name,
               major: major,
               classification: classification,
+              email: email,
             );
 
             dataService.setCurrentUser(credentials.user!.uid);

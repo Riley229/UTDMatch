@@ -16,8 +16,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    AppUser? currentUser = context.watch<AppUser?>();
+
     if (tutors == null) {
-      _getSavedTutors();
+      _getSavedTutors(currentUser);
     }
 
     return Scaffold(
@@ -93,23 +95,24 @@ class _HomePageState extends State<HomePage> {
         return ListTile(
           leading: const Icon(Icons.book),
           title: Text(unmasteredCourses[index]),
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) =>
                     CoursePage(course: unmasteredCourses[index]),
               ),
             );
+
+            setState(() => tutors = null);
           },
         );
       },
     );
   }
 
-  Future _getSavedTutors() async {
+  Future _getSavedTutors(AppUser? currentUser) async {
     DataService dataService = Provider.of<DataService>(context, listen: false);
-    AppUser? currentUser = Provider.of<AppUser?>(context, listen: false);
 
     if (currentUser != null) {
       tutors = await dataService.getTutorsFromList(currentUser.tutors);
