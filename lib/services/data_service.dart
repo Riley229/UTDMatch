@@ -30,6 +30,8 @@ class DataService {
     await user.set({
       'id': id,
       'name': name,
+      'major': '',
+      'classification': 0,
     });
   }
 
