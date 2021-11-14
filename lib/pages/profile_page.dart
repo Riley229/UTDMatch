@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:utdtutors/models/app_user.dart';
 import 'package:utdtutors/services/auth_service.dart';
@@ -37,7 +40,8 @@ class _ProfilePageState extends State<ProfilePage> {
               builder: (context, appUser, child) {
                 return Column(
                   children: [
-                    _profileImage(),
+                    _profileImage(appUser?.avatar ?? Container(),
+                        appUser?.name ?? '', appUser?.profilePic ?? ''),
                     const Divider(),
                     _profileName(appUser?.name ?? ''),
                     _profileMajor(appUser?.major ?? ''),
@@ -57,43 +61,14 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _profileImage() {
-    return CircleAvatar(
-      radius: 128,
-      backgroundImage: NetworkImage(profileImageUrl),
+  Widget _profileImage(Widget avatar, String name, String imageUrl) {
+    return InkWell(
+      child: avatar,
+      onTap: () {
+        _selectImageDialog(name, imageUrl);
+      },
     );
   }
-
-  // Widget _selectImage({TextEditingController? controller}) {
-  //   return StatefulBuilder(
-  //     builder: (context, setState) {
-  //       File imageFile = File(controller?.text ?? '');
-
-  //       return Column(
-  //         children: [
-  //           if (imageFile.existsSync()) Image.file(imageFile),
-  //           const SizedBox(height: 16),
-  //           ElevatedButton(
-  //             onPressed: () async {
-  //               final file =
-  //                   await ImagePicker().pickImage(source: ImageSource.gallery);
-  //               if (file != null) {
-  //                 setState(() => controller?.text = file.path);
-  //               }
-  //             },
-  //             child: Padding(
-  //               padding: const EdgeInsets.all(8.0),
-  //               child: Text(
-  //                 'Select Profile Picture',
-  //                 style: Theme.of(context).textTheme.headline2,
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 
   Widget _profileName(String profileName) {
     return Text(profileName, style: Theme.of(context).textTheme.headline2);
@@ -136,14 +111,19 @@ class _ProfilePageState extends State<ProfilePage> {
               trailing: Switch(
                 value: courses.values.elementAt(index) < 4,
                 onChanged: (bool newValue) async {
+                  DataService dataService =
+                      Provider.of<DataService>(context, listen: false);
                   int intValue = 20;
 
                   if (newValue == true) {
-                    intValue = await _showGradeDialog();
+                    intValue = await _selectGradeDialog();
                   }
 
                   setState(
                       () => courses[courses.keys.elementAt(index)] = intValue);
+
+                  courses[courses.keys.elementAt(index)] = intValue;
+                  dataService.updateCurrentUser({'courses': courses});
                 },
               ),
               contentPadding: EdgeInsets.zero,
@@ -211,8 +191,7 @@ class _ProfilePageState extends State<ProfilePage> {
               return AlertDialog(
                 title: confirmed ? null : const Text('Add Course'),
                 content: confirmed
-                    ? const Text(
-                        'You\'ve already added this course.')
+                    ? const Text('You\'ve already added this course.')
                     : RoundTextField(
                         label: 'Course Name',
                         prefixIcon: const Icon(Icons.book),
@@ -248,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
         });
   }
 
-  Future _showGradeDialog() async {
+  Future _selectGradeDialog() async {
     final gradeController = TextEditingController();
     bool confirmed = false;
     int gradeIndex = 20;
@@ -293,5 +272,69 @@ class _ProfilePageState extends State<ProfilePage> {
     );
 
     return gradeIndex;
+  }
+
+  Future _selectImageDialog(String userName, String imageUrl) async {
+    String imagePath = imageUrl;
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Change Profile Picture'),
+          content: StatefulBuilder(builder: (context, setState) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppUser.getAvatar(imagePath, userName),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () async {
+                    final file = await ImagePicker()
+                        .pickImage(source: ImageSource.gallery);
+                    if (file != null) {
+                      setState(() => imagePath = file.path);
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Select Profile Picture',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline4
+                          ?.copyWith(fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () async {
+                DataService dataService =
+                    Provider.of<DataService>(context, listen: false);
+                File image = File(imagePath);
+
+                if (image.existsSync()) {
+                  String imageUrl = await dataService.uploadImage(image);
+                  dataService.updateCurrentUser({'profile-pic': imageUrl});
+                }
+
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

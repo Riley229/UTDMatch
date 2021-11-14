@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
@@ -37,6 +41,7 @@ class AppUser {
   Map<String, int> courses;
 
   String get classificationName => classifications[classification] ?? 'Unknown';
+  Widget get avatar => getAvatar(profilePic, name);
 
   AppUser({
     required this.id,
@@ -76,5 +81,28 @@ class AppUser {
         AppUser.fromJson(document.data() as Map<String, dynamic>? ?? {});
     user.id = document.id;
     return user;
+  }
+
+  static Widget getAvatar(String? imagePath, String name) {
+    dynamic image;
+
+    if (imagePath != null && imagePath.isNotEmpty) {
+      File imageFile = File(imagePath);
+      image = imageFile.existsSync()
+          ? FileImage(imageFile)
+          : NetworkImage(imagePath);
+    }
+
+    return (image != null)
+        ? CircleAvatar(
+            backgroundImage: image,
+            radius: 128,
+          )
+        : CircleAvatar(
+            backgroundColor: const Color(0xFF2DE4C5),
+            child: Text(name.characters.first,
+                style: const TextStyle(fontSize: 128)),
+            radius: 128,
+          );
   }
 }

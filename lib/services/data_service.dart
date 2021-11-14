@@ -1,11 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:utdtutors/models/app_user.dart';
 
 class DataService {
   late final FirebaseFirestore _database;
   late final CollectionReference _userCollection;
+
+  late final FirebaseStorage _storage;
+  late final Reference _profilePics;
 
   StreamSubscription? _currentUserSubscription;
   AppUser? currentUser;
@@ -16,6 +21,9 @@ class DataService {
   DataService() {
     _database = FirebaseFirestore.instance;
     _userCollection = _database.collection('users');
+
+    _storage = FirebaseStorage.instance;
+    _profilePics = _storage.ref('profile_pics');
 
     _userStateController = StreamController<AppUser?>.broadcast();
     userState = _userStateController.stream as Stream<AppUser?>;
@@ -64,6 +72,20 @@ class DataService {
     await user.update(data);
   }
 
+  Future uploadImage(File image) async {
+    if (currentUser == null) return;
+
+    String imageUrl = '';
+    Reference imageRef = _profilePics.child(currentUser!.id + '.' + image.path.split('.').last);
+    UploadTask uploadTask = imageRef.putFile(image);
+
+    await uploadTask.whenComplete(() async {
+      imageUrl = await uploadTask.snapshot.ref.getDownloadURL();
+    });
+
+    return imageUrl;
+  }
+
   Future getTutorsForCourse(String courseName) async {
     List<AppUser> tutors = [];
 
@@ -71,7 +93,8 @@ class DataService {
         .where('courses.$courseName', isLessThan: 4)
         .get()
         .then((query) => {
-              for (var document in query.docs) {
+              for (var document in query.docs)
+                {
                   if (document.id != currentUser?.id)
                     tutors.add(AppUser.fromFirestore(document))
                 }
