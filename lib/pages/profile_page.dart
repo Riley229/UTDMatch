@@ -45,7 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     _profileMajor(appUser?.major ?? ''),
                     _profileClassification(appUser?.classificationName ?? ''),
                     const Divider(),
-                    _profileImage(appUser?.avatar ?? Container(),
+                    _profileImage(appUser?.avatar(radius: 128) ?? Container(),
                         appUser?.name ?? '', appUser?.profilePic ?? ''),
                     const Divider(),
                     _courses(appUser?.courses ?? {}),
@@ -287,7 +287,7 @@ class _ProfilePageState extends State<ProfilePage> {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                AppUser.getAvatar(imagePath, userName),
+                AppUser.getAvatar(imagePath, userName, 128),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () async {

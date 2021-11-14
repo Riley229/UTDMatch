@@ -114,15 +114,13 @@ class ProfileCard extends StatelessWidget {
         Wrap(
           alignment: WrapAlignment.center,
           direction: Axis.horizontal,
+          spacing: 32,
           children: List.generate(
             masteredCourses.length,
             (index) {
-              return Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text(masteredCourses[index],
-                    style:
-                        const TextStyle(fontSize: 15, fontWeight: FontWeight.w200)),
-              );
+              return Text(masteredCourses[index],
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w200));
             },
           ),
         ),

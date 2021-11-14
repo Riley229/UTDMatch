@@ -36,7 +36,6 @@ class _HomePageState extends State<HomePage> {
                   const Divider(),
                   _findTutors(),
                   _selectACourse(),
-                  const Divider(),
                   _courses(appUser?.courses ?? {}),
                 ],
               );
@@ -63,12 +62,14 @@ class _HomePageState extends State<HomePage> {
   Widget _tutors(List<AppUser> tutors) {
     return ListView.builder(
       shrinkWrap: true,
+      itemExtent: 64,
       physics: const ClampingScrollPhysics(),
       itemCount: tutors.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
-          leading: const Icon(Icons.book),
-          title: tutors.elementAt(index).avatar,
+          leading: tutors.elementAt(index).avatar(radius: 24),
+          title: Text(tutors.elementAt(index).name),
+          subtitle: Text(tutors.elementAt(index).major),
           onTap: () {},
         );
       },
