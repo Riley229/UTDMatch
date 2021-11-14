@@ -11,6 +11,22 @@ class AppUser {
     4: 'Graduate',
   };
 
+  static Map<int, String> grades = {
+    0: 'A+',
+    1: 'A',
+    2: 'A-',
+    3: 'B+',
+    4: 'B',
+    5: 'B-',
+    6: 'C+',
+    7: 'C',
+    8: 'C-',
+    9: 'D+',
+    10: 'D',
+    11: 'D-',
+    12: 'F',
+  };
+
   String id;
 
   String name;
@@ -45,7 +61,8 @@ class AppUser {
   }
 
   factory AppUser.fromFirestore(DocumentSnapshot document) {
-    AppUser user = AppUser.fromJson(document.data() as Map<String, dynamic>? ?? {});
+    AppUser user =
+        AppUser.fromJson(document.data() as Map<String, dynamic>? ?? {});
     user.id = document.id;
     return user;
   }
