@@ -302,7 +302,7 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppUser.getAvatar(imagePath, userName, 128),
-                const SizedBox(height: 16),
+                const SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: () async {
                     final file = await ImagePicker()
@@ -311,15 +311,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       setState(() => imagePath = file.path);
                     }
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Select Profile Picture',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline4
-                          ?.copyWith(fontWeight: FontWeight.w500),
-                    ),
+                  child: Text(
+                    'Select Profile Picture',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        ?.copyWith(fontWeight: FontWeight.w500),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    primary: Colors.transparent,
+                    side: const BorderSide(color: Colors.white),
                   ),
                 ),
               ],
