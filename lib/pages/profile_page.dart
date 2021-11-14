@@ -25,8 +25,6 @@ class _ProfilePageState extends State<ProfilePage> {
     'ECS 1100': false,
   };
 
-  final gradeController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,14 +135,14 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               trailing: Switch(
                 value: profileCourses.values.elementAt(index),
-                onChanged: (bool value) {
-                  setState(() {
-                    if (!profileCourses.values.elementAt(index)) {
-                      _showGradeDialog();
-                    }
-                    profileCourses[profileCourses.keys.elementAt(index)] =
-                        value;
-                  });
+                onChanged: (bool newValue) async {
+                  if (newValue == true) {
+                    newValue = await _showGradeDialog();
+                  }
+
+                  setState(() =>
+                      profileCourses[profileCourses.keys.elementAt(index)] =
+                          newValue);
                 },
               ),
               contentPadding: EdgeInsets.zero,
@@ -204,65 +202,86 @@ class _ProfilePageState extends State<ProfilePage> {
     final courseController = TextEditingController();
 
     return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Add Course'),
-          content: RoundTextField(
-            label: 'Course Name',
-            prefixIcon: const Icon(Icons.book),
-            controller: courseController,
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Add Course'),
+            content: RoundTextField(
+              label: 'Course Name',
+              prefixIcon: const Icon(Icons.book),
+              controller: courseController,
             ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () {
-                DataService dataService = Provider.of<DataService>(context, listen: false);
+            actions: [
+              TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+              TextButton(
+                child: const Text('Save'),
+                onPressed: () {
+                  DataService dataService =
+                      Provider.of<DataService>(context, listen: false);
 
-                if (currentCourses.containsKey(courseController.text)) {
-                  // don't add course, tell user its already added
-                } else {
-                  currentCourses[courseController.text] = 20;
-                  dataService.updateCurrentUser({'courses': currentCourses});
-                }
+                  if (currentCourses.containsKey(courseController.text)) {
+                    // don't add course, tell user its already added
+                  } else {
+                    currentCourses[courseController.text] = 20;
+                    dataService.updateCurrentUser({'courses': currentCourses});
+                  }
 
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      }
-    );
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   Future _showGradeDialog() async {
-    return showDialog(
+    final gradeController = TextEditingController();
+    bool confirmed = false;
+    bool qualified = false;
+
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('What Grade Did You Get?'),
-          content: RoundDropdownField(
-            label: 'Grade',
-            itemMap: AppUser.grades,
-            prefixIcon: const Icon(Icons.school),
-            controller: gradeController,
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Confirm'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: confirmed ? null : const Text('What Grade Did You Get?'),
+            content: confirmed
+                ? const Text('You Need A B+ Or Higher To Be Eligible To Tutor')
+                : RoundDropdownField(
+                    label: 'Grade',
+                    itemMap: AppUser.grades,
+                    prefixIcon: const Icon(Icons.school),
+                    controller: gradeController,
+                  ),
+            actions: [
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              if (!confirmed)
+                TextButton(
+                  child: const Text('Confirm'),
+                  onPressed: () {
+                    if ((int.tryParse(gradeController.text) ?? 20) < 4) {
+                      qualified = true;
+                      Navigator.of(context).pop();
+                    }
+
+                    setState(() => confirmed = true);
+                  },
+                ),
+            ],
+          );
+        });
       },
     );
+
+    return qualified;
   }
 }
