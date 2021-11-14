@@ -38,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     const Divider(),
                     _profileName(appUser?.name ?? ''),
                     _profileMajor(appUser?.major ?? ''),
-                    _profileClassification(appUser?.className ?? ''),
+                    _profileClassification(appUser?.classificationName ?? ''),
                     const Divider(),
                     _courses(),
                     const Divider(),
@@ -60,6 +60,37 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundImage: NetworkImage(profileImageUrl),
     );
   }
+
+  // Widget _selectImage({TextEditingController? controller}) {
+  //   return StatefulBuilder(
+  //     builder: (context, setState) {
+  //       File imageFile = File(controller?.text ?? '');
+
+  //       return Column(
+  //         children: [
+  //           if (imageFile.existsSync()) Image.file(imageFile),
+  //           const SizedBox(height: 16),
+  //           ElevatedButton(
+  //             onPressed: () async {
+  //               final file =
+  //                   await ImagePicker().pickImage(source: ImageSource.gallery);
+  //               if (file != null) {
+  //                 setState(() => controller?.text = file.path);
+  //               }
+  //             },
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(8.0),
+  //               child: Text(
+  //                 'Select Profile Picture',
+  //                 style: Theme.of(context).textTheme.headline2,
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _profileName(String profileName) {
     return Text(profileName, style: Theme.of(context).textTheme.headline2);

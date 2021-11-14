@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utdtutors/models/app_user.dart';
 import 'package:utdtutors/services/auth_service.dart';
+import 'package:utdtutors/widgets/round_dropdown_field.dart';
+import 'package:utdtutors/widgets/round_text_field.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -18,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   final nameController = TextEditingController();
   final majorController = TextEditingController();
   final classController = TextEditingController();
+  final profilePicController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -37,36 +40,15 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 16),
                 _pleaseSignIn(),
                 const SizedBox(height: 64),
-                if (register)
-                  _textField(
-                    label: 'Full Name',
-                    prefixIcon: const Icon(Icons.person),
-                    keyboard: TextInputType.name,
-                    controller: nameController,
-                  ),
-                if (register) const SizedBox(height: 32),
-                if (register)
-                  _textField(
-                    label: 'Major',
-                    controller: majorController,
-                  ),
-                if (register) const SizedBox(height: 32),
-                if (register)
-                  _dropdownField(
-                    label: 'Class',
-                    items: AppUser.classifications,
-                    prefixIcon: const Icon(Icons.school),
-                    controller: classController,
-                  ),
-                if (register) const SizedBox(height: 32),
-                _textField(
+                if (register) ..._registerFields(),
+                RoundTextField(
                   label: 'Email Address',
                   prefixIcon: const Icon(Icons.email),
                   keyboard: TextInputType.emailAddress,
                   controller: emailController,
                 ),
-                const SizedBox(height: 32),
-                _textField(
+                const SizedBox(height: 24),
+                RoundTextField(
                   label: 'Password',
                   prefixIcon: const Icon(Icons.lock),
                   obscureText: true,
@@ -76,6 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                 _loginButton(),
                 const SizedBox(height: 32),
                 _registerButton(),
+                const SizedBox(height: 32),
               ],
             ),
           ),
@@ -89,65 +72,39 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _pleaseSignIn() {
-    return Text('Please Sign In', style: Theme.of(context).textTheme.headline3);
+    return Text(register ? 'Register Now' : 'Please Sign In', style: Theme.of(context).textTheme.headline3);
   }
 
-  _textField({
-    required String label,
-    Icon? prefixIcon,
-    TextInputType? keyboard,
-    bool obscureText = false,
-    TextEditingController? controller
-  }) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        prefixIcon: prefixIcon,
-        label: Text(label),
+  List<Widget> _registerFields() {
+    return [
+      RoundTextField(
+        label: 'Full Name',
+        prefixIcon: const Icon(Icons.person),
+        keyboard: TextInputType.name,
+        controller: nameController,
       ),
-      keyboardType: keyboard,
-      obscureText: obscureText,
-      validator: (value) {
-        return (value == null || value.isEmpty) ? '' : null;
-      },
-    );
-  }
-
-  Widget _dropdownField({
-    required String label,
-    required Map<dynamic, String> items,
-    Icon? prefixIcon,
-    TextEditingController? controller
-  }) {
-    return DropdownButtonFormField(
-      items: items.keys.map((key) {
-        return DropdownMenuItem(
-          value: key,
-          child: Text(items[key] ?? ''),
-        );
-      }).toList(),
-      decoration: InputDecoration(
-        prefixIcon: prefixIcon,
-        label: Text(label),
+      const SizedBox(height: 24),
+      RoundTextField(
+        label: 'Major',
+        prefixIcon: const Icon(Icons.star),
+        controller: majorController,
       ),
-      onChanged: (newValue) {
-        controller?.text = newValue.toString();
-      },
-      validator: (value) {
-        return (value == null) ? '' : null;
-      },
-    );
+      const SizedBox(height: 24),
+      RoundDropdownField(
+        label: 'Classification',
+        itemMap: AppUser.classifications,
+        prefixIcon: const Icon(Icons.school),
+        controller: classController,
+      ),
+      const SizedBox(height: 24),
+    ];
   }
-
-  // Widget _imageField() {
-
-  // }
 
   Widget _loginButton() {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        child: Text(register ? 'Create Account' : 'Login'),
+        child: Text(register ? 'Create Account' : 'Sign In'),
         onPressed: () async {
           if (_formKey.currentState != null &&
               _formKey.currentState!.validate()) {
@@ -181,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         Text(register ? 'Already Have An Account?' : 'Don\'t Have An Account?'),
         TextButton(
-          child: Text(register ? 'Login' : 'Sign Up'),
+          child: Text(register ? 'Sign In' : 'Sign Up'),
           onPressed: () {
             setState(() {
               register = !register;

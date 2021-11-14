@@ -33,7 +33,7 @@ class DataService {
       'id': id,
       'name': name,
       'major': major,
-      'class': classification,
+      'classification': classification,
     });
   }
 

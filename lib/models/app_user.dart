@@ -17,7 +17,7 @@ class AppUser {
   String major;
   int classification;
 
-  String get className => classifications[classification] ?? 'Unknown';
+  String get classificationName => classifications[classification] ?? 'Unknown';
 
   AppUser({
     required this.id,
@@ -31,7 +31,7 @@ class AppUser {
       'id': id,
       'name': name,
       'major': major,
-      'class': classification,
+      'classification': classification,
     };
   }
 
@@ -40,7 +40,7 @@ class AppUser {
       id: json['id'] as String,
       name: json['name'] as String,
       major: json['major'] as String,
-      classification: json['class'] as int,
+      classification: json['classification'] as int,
     );
   }
 
