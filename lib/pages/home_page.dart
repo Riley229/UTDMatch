@@ -10,19 +10,11 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-List profileCourses = [
-  'CS 1200',
-  'CS 2305',
-  'CS 2337',
-  'RHET 1302',
-  'GOVT 2306',
-  'ECS 1100',
-];
-
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
         child: Center(
@@ -31,8 +23,10 @@ class _HomePageState extends State<HomePage> {
               return Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
+                  const Divider(),
                   _findTutors(),
                   _selectACourse(),
+                  const Divider(),
                   _courses(appUser?.courses ?? {}),
                 ],
               );
@@ -53,25 +47,27 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _courses(Map<String, int> courses) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
-      itemCount: courses.length,
-      itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          leading: const Icon(Icons.book),
-          title: Text(courses.keys.elementAt(index)),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    CoursePage(course: courses.keys.elementAt(index)),
-              ),
-            );
-          },
-        );
-      },
+    return Expanded(
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        itemCount: courses.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            leading: const Icon(Icons.book),
+            title: Text(courses.keys.elementAt(index)),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      CoursePage(course: courses.keys.elementAt(index)),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

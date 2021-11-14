@@ -10,36 +10,55 @@ class ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Column(
-      children: [
-        Container(
-          width: size.width * .8,
-          height: size.height * .5,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: const DecorationImage(
-              image: NetworkImage(
-                  'http://i.ebayimg.com/images/g/Tw4AAOxyTjNSgMig/s-l500.jpg'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Container(
+    return Container(
+      width: size.width * .8,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        children: [
+          Container(
+            width: size.width * .8,
+            height: size.height * .4,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: const [
-                BoxShadow(color: Colors.black12),
-              ],
-              gradient: const LinearGradient(
-                colors: [Colors.transparent, Colors.black45],
-                begin: Alignment.center,
-                end: Alignment.bottomCenter,
+              borderRadius: BorderRadius.circular(20),
+              image: const DecorationImage(
+                image: NetworkImage(
+                    'http://i.ebayimg.com/images/g/Tw4AAOxyTjNSgMig/s-l500.jpg'),
+                fit: BoxFit.cover,
               ),
             ),
-            child: _userInfo(context),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black12),
+                ],
+                gradient: const LinearGradient(
+                  colors: [Colors.transparent, Colors.black54],
+                  stops: [0, .9],
+                  begin: Alignment.center,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: _userInfo(context),
+            ),
           ),
-        ),
-        _courses(context),
-      ],
+          const SizedBox(
+            height: 8,
+          ),
+          _details(context),
+          const Divider(
+            indent: 16,
+            endIndent: 16,
+            height: 16,
+            thickness: 2,
+          ),
+          _courses(context),
+          const SizedBox(height: 16),
+        ],
+      ),
     );
   }
 
@@ -69,22 +88,37 @@ class ProfileCard extends StatelessWidget {
     );
   }
 
+  Widget _details(BuildContext context) {
+    return Text(
+      user.classificationName,
+      style: Theme.of(context).textTheme.headline4,
+    );
+  }
+
   Widget _courses(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Container(
-      width: size.width * .8,
-      color: Theme.of(context).scaffoldBackgroundColor,
-      child: Column(
-        children: List.generate(
-          user.courses.length,
-          (index) {
-            return Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Text(user.courses.keys.elementAt(index)),
-            );
-          },
+    return Column(
+      children: [
+        Text(
+          'Mastered Courses',
+          style: Theme.of(context).textTheme.headline5,
         ),
-      ),
+        const SizedBox(height: 8),
+        Wrap(
+          alignment: WrapAlignment.center,
+          direction: Axis.horizontal,
+          children: List.generate(
+            user.courses.length,
+            (index) {
+              return Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(user.courses.keys.elementAt(index),
+                    style:
+                        TextStyle(fontSize: 15, fontWeight: FontWeight.w200)),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

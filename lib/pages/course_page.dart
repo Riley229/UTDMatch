@@ -14,7 +14,7 @@ class CoursePage extends StatefulWidget {
 }
 
 class _CoursePageState extends State<CoursePage> {
-  final List<AppUser> tutors = [
+  final List<AppUser> tutorss = [
     AppUser(
       id: '123123',
       name: 'Temocccccc',
@@ -47,7 +47,7 @@ class _CoursePageState extends State<CoursePage> {
     ),
   ];
 
-  List<AppUser>? tutorss;
+  List<AppUser>? tutors;
 
   @override
   Widget build(BuildContext context) {
@@ -63,17 +63,21 @@ class _CoursePageState extends State<CoursePage> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              _findATutorFor(),
-              const SizedBox(height: 16),
-              _course(),
               const SizedBox(height: 64),
+              const Divider(),
+              _findATutorFor(),
+              const SizedBox(height: 8),
+              _course(),
+              _likeDislikeDivider(),
+              const SizedBox(height: 8),
               _tutors(),
+              const SizedBox(height: 64),
             ],
           ),
         ),
@@ -81,8 +85,42 @@ class _CoursePageState extends State<CoursePage> {
     );
   }
 
+  Widget _likeDislikeDivider() {
+    return Row(
+      children: [
+        SizedBox(
+          width: 64,
+          child: Text(
+            'Dislike',
+            style: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(color: Colors.red.shade300),
+          ),
+        ),
+        const Expanded(
+          child: Divider(
+            indent: 16,
+            endIndent: 16,
+          ),
+        ),
+        SizedBox(
+          width: 64,
+          child: Text(
+            'Like',
+            style: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(color: Colors.green.shade300),
+            textAlign: TextAlign.right,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _findATutorFor() {
-    return Text('FInding A Tutor For',
+    return Text('Finding A Tutor For',
         style: Theme.of(context).textTheme.headline5);
   }
 
@@ -91,13 +129,14 @@ class _CoursePageState extends State<CoursePage> {
   }
 
   Widget _tutors() {
-    return (tutors == null || tutors.isEmpty)
-        ? Center(
+    return (tutors == null || tutors!.isEmpty)
+        ? Padding(
+            padding: const EdgeInsets.only(top: 128),
             child: Text('No Tutors Available',
                 style: Theme.of(context).textTheme.headline4),
           )
         : Stack(
-            children: tutors.map(_buildProfileCard).toList(),
+            children: tutors!.map(_buildProfileCard).toList(),
           );
   }
 
@@ -108,12 +147,26 @@ class _CoursePageState extends State<CoursePage> {
         feedback: Material(
             type: MaterialType.transparency, child: ProfileCard(user: user)),
         childWhenDragging: Container(),
+        onDragEnd: (details) => _onDragEnd(details, user),
       ),
     );
   }
 
+  void _onDragEnd(DraggableDetails details, AppUser tutor) {
+    const minimumDrag = 100;
+    if (details.offset.dx > minimumDrag) {
+      tutor.isSwipedOff = true;
+      setState(() => tutors!.remove(tutor));
+    } else if (details.offset.dx < -minimumDrag) {
+      tutor.isLiked = true;
+      setState(() => tutors!.remove(tutor));
+    }
+  }
+
   Future _getCourseTutors(DataService dataService) async {
-    tutorss = await dataService.getTutorsForCourse(widget.course);
-    setState(() {});
+    tutors = await dataService.getTutorsForCourse(widget.course);
+    Future.delayed(const Duration(milliseconds: 150), () {
+      setState(() {});
+    });
   }
 }
