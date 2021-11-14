@@ -34,6 +34,7 @@ class DataService {
       'name': name,
       'major': major,
       'classification': classification,
+      'courses': {},
     });
   }
 
@@ -54,5 +55,12 @@ class DataService {
         });
       }
     }
+  }
+
+  Future updateCurrentUser(Map<String, dynamic> data) async {
+    if (currentUser == null) return;
+    
+    DocumentReference user = _userCollection.doc(currentUser!.id);
+    await user.update(data);
   }
 }

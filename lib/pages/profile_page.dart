@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utdtutors/models/app_user.dart';
 import 'package:utdtutors/services/auth_service.dart';
+import 'package:utdtutors/services/data_service.dart';
 import 'package:utdtutors/widgets/round_dropdown_field.dart';
 import 'package:utdtutors/widgets/round_text_field.dart';
 
@@ -42,7 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     _profileMajor(appUser?.major ?? ''),
                     _profileClassification(appUser?.classificationName ?? ''),
                     const Divider(),
-                    _courses(),
+                    _courses(appUser?.courses ?? {}),
                     const Divider(),
                     const SizedBox(height: 32),
                     _signOutButton(),
@@ -107,7 +108,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Text(profileMajor, style: Theme.of(context).textTheme.headline3);
   }
 
-  Widget _courses() {
+  Widget _courses(Map<String, int> courses) {
     return Column(
       children: [
         ListTile(
@@ -134,12 +135,14 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               trailing: Switch(
                 value: profileCourses.values.elementAt(index),
-                onChanged: (bool value) {
-                  setState(() {
-                    _showGradeDialog();
-                    profileCourses[profileCourses.keys.elementAt(index)] =
-                        value;
-                  });
+                onChanged: (bool newValue) async {
+                  if (newValue == true) {
+                    newValue = await _showGradeDialog();
+                  }
+
+                  setState(() =>
+                      profileCourses[profileCourses.keys.elementAt(index)] =
+                          newValue);
                 },
               ),
               contentPadding: EdgeInsets.zero,
@@ -153,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
             contentPadding: EdgeInsets.zero,
           ),
           onTap: () {
-            _addCourseDialog();
+            _addCourseDialog(courses);
           },
         ),
       ],
@@ -195,7 +198,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future _addCourseDialog() async {
+  Future _addCourseDialog(Map<String, int> currentCourses) async {
     final courseController = TextEditingController();
 
     return showDialog(
@@ -215,22 +218,32 @@ class _ProfilePageState extends State<ProfilePage> {
                     Navigator.of(context).pop();
                   }),
               TextButton(
-                  child: const Text('Save'),
-                  onPressed: () {
-                    // SAVE new course
-                    Navigator.of(context).pop();
-                  })
+                child: const Text('Save'),
+                onPressed: () {
+                  DataService dataService =
+                      Provider.of<DataService>(context, listen: false);
+
+                  if (currentCourses.containsKey(courseController.text)) {
+                    // don't add course, tell user its already added
+                  } else {
+                    currentCourses[courseController.text] = 20;
+                    dataService.updateCurrentUser({'courses': currentCourses});
+                  }
+
+                  Navigator.of(context).pop();
+                },
+              ),
             ],
           );
         });
   }
 
-  Future<bool> _showGradeDialog() async {
+  Future _showGradeDialog() async {
     final gradeController = TextEditingController();
     bool confirmed = false;
     bool qualified = false;
 
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setState) {
@@ -255,13 +268,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 TextButton(
                   child: const Text('Confirm'),
                   onPressed: () {
-                    setState(() {
+                    if ((int.tryParse(gradeController.text) ?? 20) < 4) {
                       qualified = true;
-                      confirmed = true;
-                    });
-                    if (int.tryParse(gradeController.text)! < 4) {
                       Navigator.of(context).pop();
                     }
+
+                    setState(() => confirmed = true);
                   },
                 ),
             ],
@@ -269,6 +281,7 @@ class _ProfilePageState extends State<ProfilePage> {
         });
       },
     );
+
     return qualified;
   }
 }
