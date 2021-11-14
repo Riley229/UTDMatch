@@ -3,18 +3,35 @@ import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
 class AppUser {
+  static Map<int, String> classifications = {
+    0: 'Freshmen',
+    1: 'Sophmore',
+    2: 'Junior',
+    3: 'Senior',
+    4: 'Graduate',
+  };
+
   String id;
+
   String name;
+  String major;
+  int classification;
+
+  String get className => classifications[classification] ?? 'Unknown';
 
   AppUser({
     required this.id,
     required this.name,
+    required this.major,
+    required this.classification,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
+      'major': major,
+      'class': classification,
     };
   }
 
@@ -22,12 +39,13 @@ class AppUser {
     return AppUser(
       id: json['id'] as String,
       name: json['name'] as String,
+      major: json['major'] as String,
+      classification: json['class'] as int,
     );
   }
 
   factory AppUser.fromFirestore(DocumentSnapshot document) {
-    AppUser user =
-        AppUser.fromJson(document.data as Map<String, dynamic>);
+    AppUser user = AppUser.fromJson(document.data as Map<String, dynamic>);
     user.id = document.id;
     return user;
   }

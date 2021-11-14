@@ -15,6 +15,8 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   final nameController = TextEditingController();
+  final majorController = TextEditingController();
+  final classController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -34,11 +36,33 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 16),
                 _pleaseSignIn(),
                 const SizedBox(height: 64),
-                register ? _nameField(controller: nameController) : Container(),
-                register ? const SizedBox(height: 32) : Container(),
-                _emailField(controller: emailController),
+                if (register)
+                  _textField(
+                      label: 'Full Name',
+                      prefixIcon: const Icon(Icons.person),
+                      keyboard: TextInputType.name,
+                      controller: nameController),
+                if (register) const SizedBox(height: 32),
+                if (register)
+                  _textField(
+                      label: 'Major',
+                      controller: majorController),
+                if (register) const SizedBox(height: 32),
+                if (register) const SizedBox(height: 12.0), // placeholder
+                if (register) const SizedBox(height: 32),
+                _textField(
+                  label: 'Email Address',
+                  prefixIcon: const Icon(Icons.email),
+                  keyboard: TextInputType.emailAddress,
+                  controller: emailController,
+                ),
                 const SizedBox(height: 32),
-                _passwordField(controller: passwordController),
+                _textField(
+                  label: 'Password',
+                  prefixIcon: const Icon(Icons.lock),
+                  obscureText: true,
+                  controller: passwordController,
+                ),
                 const SizedBox(height: 64),
                 _loginButton(),
                 const SizedBox(height: 32),
@@ -59,45 +83,32 @@ class _LoginPageState extends State<LoginPage> {
     return Text('Please Sign In', style: Theme.of(context).textTheme.headline3);
   }
 
-  Widget _nameField({TextEditingController? controller}) {
+  _textField(
+      {required String label,
+      Icon? prefixIcon,
+      TextInputType? keyboard,
+      bool obscureText = false,
+      TextEditingController? controller}) {
     return TextFormField(
       controller: controller,
-      decoration: const InputDecoration(
-        prefixIcon: Icon(Icons.person),
-        label: Text('Full Name'),
+      decoration: InputDecoration(
+        prefixIcon: prefixIcon,
+        label: Text(label),
       ),
-      keyboardType: TextInputType.name,
+      keyboardType: keyboard,
+      obscureText: obscureText,
       validator: (value) {
         return (value == null || value.isEmpty) ? '' : null;
       },
     );
   }
 
-  Widget _emailField({TextEditingController? controller}) {
+  Widget _classField({TextEditingController? controller}) {
     return TextFormField(
       controller: controller,
       decoration: const InputDecoration(
-        prefixIcon: Icon(Icons.email),
-        label: Text('Email Address'),
+        label: Text('Class'),
       ),
-      keyboardType: TextInputType.emailAddress,
-      validator: (value) {
-        return (value == null || value.isEmpty) ? '' : null;
-      },
-    );
-  }
-
-  Widget _passwordField({TextEditingController? controller}) {
-    return TextFormField(
-      controller: controller,
-      decoration: const InputDecoration(
-        prefixIcon: Icon(Icons.lock),
-        label: Text('Password'),
-      ),
-      obscureText: true,
-      validator: (value) {
-        return (value == null || value.length < 6) ? '' : null;
-      },
     );
   }
 
@@ -109,7 +120,8 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () async {
           if (_formKey.currentState != null &&
               _formKey.currentState!.validate()) {
-            AuthService authService = Provider.of<AuthService>(context, listen: false);
+            AuthService authService =
+                Provider.of<AuthService>(context, listen: false);
 
             if (register) {
               await authService.register(
