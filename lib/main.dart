@@ -66,10 +66,11 @@ class MyApp extends StatelessWidget {
             headline1: TextStyle(fontSize: 50, fontWeight: FontWeight.w700),
             headline2: TextStyle(fontSize: 45, fontWeight: FontWeight.w500),
             headline3: TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
+            headline4: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
             subtitle1: TextStyle(
                 fontSize: 20, fontWeight: FontWeight.w300), //Text Form Fields
             subtitle2: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
-          ),
+          ).apply(bodyColor: Colors.white, displayColor: Colors.white),
           inputDecorationTheme: const InputDecorationTheme(
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(
@@ -100,6 +101,10 @@ class MyApp extends StatelessWidget {
               textStyle:
                   const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
             ),
+          ),
+          dividerTheme: const DividerThemeData(
+            thickness: 3,
+            space: 64,
           ),
         ),
       ),

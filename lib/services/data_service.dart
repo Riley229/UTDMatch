@@ -49,7 +49,5 @@ class DataService {
         });
       }
     }
-
-    print(id);
   }
 }

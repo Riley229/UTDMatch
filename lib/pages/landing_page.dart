@@ -25,7 +25,6 @@ class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     User? authUser = context.watch<User?>();
     DataService dataService = context.watch<DataService>();
-
     dataService.setCurrentUser(authUser?.uid);
 
     return Scaffold(
