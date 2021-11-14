@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:utdtutors/models/app_user.dart';
 import 'package:utdtutors/services/auth_service.dart';
 import 'package:utdtutors/widgets/round_dropdown_field.dart';
+import 'package:utdtutors/widgets/round_text_field.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -145,6 +146,16 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           },
         ),
+        InkWell(
+          child: const ListTile(
+            leading: Icon(Icons.add),
+            title: Text('Add Course'),
+            contentPadding: EdgeInsets.zero,
+          ),
+          onTap: () {
+            _addCourseDialog();
+          },
+        ),
       ],
     );
   }
@@ -163,10 +174,10 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<void> _showInfoDialog() async {
+  Future _showInfoDialog() async {
     return showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: const Text('Course Toggle'),
           content: const Text(
@@ -182,6 +193,36 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       },
     );
+  }
+
+  Future _addCourseDialog() async {
+    final courseController = TextEditingController();
+
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Add Course'),
+            content: RoundTextField(
+              label: 'Course Name',
+              prefixIcon: const Icon(Icons.book),
+              controller: courseController,
+            ),
+            actions: [
+              TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+              TextButton(
+                  child: const Text('Save'),
+                  onPressed: () {
+                    // SAVE new course
+                    Navigator.of(context).pop();
+                  })
+            ],
+          );
+        });
   }
 
   Future<bool> _showGradeDialog() async {
