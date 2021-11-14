@@ -24,12 +24,12 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
-        child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: Form(
-            key: _formKey,
+      body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Column(
               children: [
                 const SizedBox(height: 64),
