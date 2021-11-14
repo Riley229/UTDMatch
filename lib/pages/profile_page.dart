@@ -34,14 +34,18 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Center(
             child: Column(
               children: [
-                const SizedBox(height: 32),
+                const SizedBox(height: 64),
                 _profileImage(),
-                const SizedBox(height: 32),
+                const Divider(),
                 _profileName(),
                 _profileMajor(),
                 _profileClassification(),
+                const Divider(),
+                _courses(),
+                const Divider(),
                 const SizedBox(height: 32),
                 _signOutButton(),
+                const SizedBox(height: 64),
               ],
             ),
           ),
@@ -63,11 +67,30 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _profileClassification() {
     return Text(profileClassification,
-        style: Theme.of(context).textTheme.subtitle1);
+        style: Theme.of(context).textTheme.headline4);
   }
 
   Widget _profileMajor() {
     return Text(profileMajor, style: Theme.of(context).textTheme.headline3);
+  }
+
+  Widget _courses() {
+    return Column(
+      children: [
+        Text('Courses', style: Theme.of(context).textTheme.headline3),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+          itemCount: profileCourses.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              leading: const Icon(Icons.book),
+              title: Text(profileCourses[index]),
+            );
+          },
+        ),
+      ],
+    );
   }
 
   Widget _signOutButton() {
