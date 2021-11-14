@@ -11,6 +11,8 @@ class AuthService {
   Future register({
     required BuildContext context,
     required String name,
+    required String major,
+    required int classification,
     required String email,
     required String password
   }) async {
@@ -25,6 +27,8 @@ class AuthService {
             await dataService.createUser(
               id: credentials.user!.uid,
               name: name,
+              major: major,
+              classification: classification,
             );
 
             dataService.setCurrentUser(credentials.user!.uid);

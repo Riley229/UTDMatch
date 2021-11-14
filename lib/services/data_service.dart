@@ -24,14 +24,16 @@ class DataService {
   Future createUser({
     required String id,
     required String name,
+    required String major,
+    required int classification,
   }) async {
     DocumentReference user = _userCollection.doc(id);
 
     await user.set({
       'id': id,
       'name': name,
-      'major': '',
-      'classification': 0,
+      'major': major,
+      'class': classification,
     });
   }
 
@@ -48,6 +50,7 @@ class DataService {
       if (userExists) {
         user.snapshots().listen((document) {
           currentUser = AppUser.fromFirestore(document);
+          _userStateController.add(currentUser);
         });
       }
     }
