@@ -45,7 +45,7 @@ class AppUser {
   }
 
   factory AppUser.fromFirestore(DocumentSnapshot document) {
-    AppUser user = AppUser.fromJson(document.data as Map<String, dynamic>);
+    AppUser user = AppUser.fromJson(document.data() as Map<String, dynamic>? ?? {});
     user.id = document.id;
     return user;
   }

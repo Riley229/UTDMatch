@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:utdtutors/models/app_user.dart';
 import 'package:utdtutors/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -38,17 +39,25 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 64),
                 if (register)
                   _textField(
-                      label: 'Full Name',
-                      prefixIcon: const Icon(Icons.person),
-                      keyboard: TextInputType.name,
-                      controller: nameController),
+                    label: 'Full Name',
+                    prefixIcon: const Icon(Icons.person),
+                    keyboard: TextInputType.name,
+                    controller: nameController,
+                  ),
                 if (register) const SizedBox(height: 32),
                 if (register)
                   _textField(
-                      label: 'Major',
-                      controller: majorController),
+                    label: 'Major',
+                    controller: majorController,
+                  ),
                 if (register) const SizedBox(height: 32),
-                if (register) const SizedBox(height: 12.0), // placeholder
+                if (register)
+                  _dropdownField(
+                    label: 'Class',
+                    items: AppUser.classifications,
+                    prefixIcon: const Icon(Icons.school),
+                    controller: classController,
+                  ),
                 if (register) const SizedBox(height: 32),
                 _textField(
                   label: 'Email Address',
@@ -83,12 +92,13 @@ class _LoginPageState extends State<LoginPage> {
     return Text('Please Sign In', style: Theme.of(context).textTheme.headline3);
   }
 
-  _textField(
-      {required String label,
-      Icon? prefixIcon,
-      TextInputType? keyboard,
-      bool obscureText = false,
-      TextEditingController? controller}) {
+  _textField({
+    required String label,
+    Icon? prefixIcon,
+    TextInputType? keyboard,
+    bool obscureText = false,
+    TextEditingController? controller
+  }) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
@@ -103,14 +113,35 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _classField({TextEditingController? controller}) {
-    return TextFormField(
-      controller: controller,
-      decoration: const InputDecoration(
-        label: Text('Class'),
+  Widget _dropdownField({
+    required String label,
+    required Map<dynamic, String> items,
+    Icon? prefixIcon,
+    TextEditingController? controller
+  }) {
+    return DropdownButtonFormField(
+      items: items.keys.map((key) {
+        return DropdownMenuItem(
+          value: key,
+          child: Text(items[key] ?? ''),
+        );
+      }).toList(),
+      decoration: InputDecoration(
+        prefixIcon: prefixIcon,
+        label: Text(label),
       ),
+      onChanged: (newValue) {
+        controller?.text = newValue.toString();
+      },
+      validator: (value) {
+        return (value == null) ? '' : null;
+      },
     );
   }
+
+  // Widget _imageField() {
+
+  // }
 
   Widget _loginButton() {
     return SizedBox(
@@ -127,6 +158,8 @@ class _LoginPageState extends State<LoginPage> {
               await authService.register(
                 context: context,
                 name: nameController.text,
+                major: majorController.text,
+                classification: int.parse(classController.text),
                 email: emailController.text,
                 password: passwordController.text,
               );
