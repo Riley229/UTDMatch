@@ -27,14 +27,13 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
-        child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: Center(
+      body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
             child: Column(
               children: [
-                const SizedBox(height: 64),
                 _profileImage(),
                 const Divider(),
                 _profileName(),
@@ -45,7 +44,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 const Divider(),
                 const SizedBox(height: 32),
                 _signOutButton(),
-                const SizedBox(height: 64),
               ],
             ),
           ),
