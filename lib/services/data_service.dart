@@ -43,6 +43,7 @@ class DataService {
       'major': major,
       'classification': classification,
       'courses': {},
+      'tutors': [],
     });
   }
 

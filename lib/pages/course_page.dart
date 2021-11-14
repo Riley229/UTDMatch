@@ -14,39 +14,6 @@ class CoursePage extends StatefulWidget {
 }
 
 class _CoursePageState extends State<CoursePage> {
-  final List<AppUser> tutorss = [
-    AppUser(
-      id: '123123',
-      name: 'Temocccccc',
-      major: 'Computer Sciencescsc',
-      classification: 1,
-      profilePic: 'http://i.ebayimg.com/images/g/Tw4AAOxyTjNSgMig/s-l500.jpg',
-      courses: {
-        'CS 1200': 1,
-        'CS 2305': 0,
-        'CS 2337': 3,
-        'RHET 1302': 2,
-        'GOVT 2306': 1,
-        'ECS 1100': 0,
-      },
-    ),
-    AppUser(
-      id: '123123',
-      name: 'Temoc',
-      major: 'Computer Science',
-      classification: 1,
-      profilePic: 'http://i.ebayimg.com/images/g/Tw4AAOxyTjNSgMig/s-l500.jpg',
-      courses: {
-        'CS 1200': 1,
-        'CS 2305': 0,
-        'CS 2337': 3,
-        'RHET 1302': 2,
-        'GOVT 2306': 1,
-        'ECS 1100': 0,
-      },
-    ),
-  ];
-
   List<AppUser>? tutors;
 
   @override
@@ -155,17 +122,24 @@ class _CoursePageState extends State<CoursePage> {
   void _onDragEnd(DraggableDetails details, AppUser tutor) {
     const minimumDrag = 100;
     if (details.offset.dx > minimumDrag) {
-      tutor.isSwipedOff = true;
+      DataService dataService =
+          Provider.of<DataService>(context, listen: false);
+      AppUser? currentUser = Provider.of<AppUser?>(context, listen: false);
+
+      if (currentUser != null) {
+        currentUser.tutors.add(tutor.id);
+        dataService.updateCurrentUser({'tutors': currentUser.tutors});
+      }
+
       setState(() => tutors!.remove(tutor));
     } else if (details.offset.dx < -minimumDrag) {
-      tutor.isLiked = true;
       setState(() => tutors!.remove(tutor));
     }
   }
 
   Future _getCourseTutors(DataService dataService) async {
     tutors = await dataService.getTutorsForCourse(widget.course);
-    Future.delayed(const Duration(milliseconds: 150), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       setState(() {});
     });
   }

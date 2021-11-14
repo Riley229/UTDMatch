@@ -38,13 +38,12 @@ class AppUser {
   int classification;
   String? profilePic;
 
-  bool isSwipedOff = false;
-  bool isLiked = false;
-
   Map<String, int> courses;
+  List<String> tutors;
 
   String get classificationName => classifications[classification] ?? 'Unknown';
   Widget get avatar => getAvatar(profilePic, name);
+  
 
   AppUser({
     required this.id,
@@ -53,6 +52,7 @@ class AppUser {
     required this.classification,
     required this.profilePic,
     required this.courses,
+    required this.tutors,
   });
 
   Map<String, dynamic> toJson() {
@@ -63,6 +63,7 @@ class AppUser {
       'classification': classification,
       'profile-pic': profilePic,
       'courses': courses,
+      'tutors': tutors,
     };
   }
 
@@ -76,6 +77,9 @@ class AppUser {
       courses: (json['courses'] as Map<String, dynamic>).map((key, value) {
         return MapEntry(key, value as int);
       }),
+      tutors: (json['tutors'] as List<dynamic>)
+          .map((item) => item as String)
+          .toList(),
     );
   }
 
