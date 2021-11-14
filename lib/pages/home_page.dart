@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
     List<String> unmasteredCourses = [];
 
     courses.forEach((key, value) {
-      if (value == 20) {
+      if (value > 3) {
         unmasteredCourses.add(key);
       }
     });

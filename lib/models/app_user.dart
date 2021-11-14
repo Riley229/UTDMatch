@@ -59,6 +59,12 @@ class AppUser {
   });
 
   Map<String, dynamic> toJson() {
+    List<dynamic> coursesList = [];
+
+    courses.forEach((key, value) {
+      coursesList.add({'name': key, 'grade': value});
+    });
+
     return {
       'id': id,
       'name': name,
@@ -66,12 +72,18 @@ class AppUser {
       'classification': classification,
       'email': email,
       'profile-pic': profilePic,
-      'courses': courses,
+      'courses': coursesList,
       'tutors': tutors,
     };
   }
 
   factory AppUser.fromJson(Map<String, dynamic> json) {
+    Map<String, int> courses = {};
+
+    (json['courses'] as List<dynamic>).forEach((item) {
+      courses[item['name']] = item['grade'];
+    });
+
     return AppUser(
       id: json['id'] as String,
       name: json['name'] as String,
@@ -79,9 +91,7 @@ class AppUser {
       classification: json['classification'] as int,
       email: json['email'] as String,
       profilePic: json['profile-pic'] as String?,
-      courses: (json['courses'] as Map<String, dynamic>).map((key, value) {
-        return MapEntry(key, value as int);
-      }),
+      courses: courses,
       tutors: (json['tutors'] as List<dynamic>)
           .map((item) => item as String)
           .toList(),

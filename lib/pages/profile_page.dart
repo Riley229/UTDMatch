@@ -124,7 +124,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       () => courses[courses.keys.elementAt(index)] = intValue);
 
                   courses[courses.keys.elementAt(index)] = intValue;
-                  dataService.updateCurrentUser({'courses': courses});
+
+                  List<dynamic> coursesList = [];
+
+                  courses.forEach((key, value) {
+                    coursesList.add({'name': key, 'grade': value});
+                  });
+
+                  dataService.updateCurrentUser({'courses': coursesList});
                 },
               ),
               contentPadding: EdgeInsets.zero,
@@ -215,8 +222,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           setState(() => confirmed = true);
                         } else {
                           currentCourses[courseController.text] = 20;
+
+                          List<dynamic> coursesList = [];
+
+                          currentCourses.forEach((key, value) {
+                            coursesList.add({'name': key, 'grade': value});
+                          });
+
                           dataService
-                              .updateCurrentUser({'courses': currentCourses});
+                              .updateCurrentUser({'courses': coursesList});
                           Navigator.of(context).pop();
                         }
                       },

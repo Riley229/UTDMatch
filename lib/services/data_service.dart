@@ -44,7 +44,7 @@ class DataService {
       'major': major,
       'classification': classification,
       'email': email,
-      'courses': {},
+      'courses': [],
       'tutors': [],
     });
   }
@@ -94,7 +94,7 @@ class DataService {
     List<AppUser> tutors = [];
 
     _userCollection
-        .where('courses.$courseName', isLessThan: 4)
+        .where('courses', arrayContains: {'name': courseName, 'grade': 0})
         .get()
         .then((query) {
       for (var document in query.docs) {
@@ -103,11 +103,16 @@ class DataService {
         }
       }
     });
-
+    print(tutors);
     return tutors;
   }
 
   Future getTutorsFromList(List<String> tutorIds) async {
+    if (tutorIds.isEmpty) {
+      tutorIds.add('');
+    }
+
+
     List<AppUser> tutors = [];
 
     _userCollection.where('id', whereIn: tutorIds).get().then((query) {
