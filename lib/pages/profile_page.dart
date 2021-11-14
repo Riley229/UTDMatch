@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utdtutors/models/app_user.dart';
 import 'package:utdtutors/services/auth_service.dart';
+import 'package:utdtutors/services/data_service.dart';
 import 'package:utdtutors/widgets/round_dropdown_field.dart';
 import 'package:utdtutors/widgets/round_text_field.dart';
 
@@ -44,7 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     _profileMajor(appUser?.major ?? ''),
                     _profileClassification(appUser?.classificationName ?? ''),
                     const Divider(),
-                    _courses(),
+                    _courses(appUser?.courses ?? {}),
                     const Divider(),
                     const SizedBox(height: 32),
                     _signOutButton(),
@@ -109,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Text(profileMajor, style: Theme.of(context).textTheme.headline3);
   }
 
-  Widget _courses() {
+  Widget _courses(Map<String, int> courses) {
     return Column(
       children: [
         ListTile(
@@ -157,7 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
             contentPadding: EdgeInsets.zero,
           ),
           onTap: () {
-            _addCourseDialog();
+            _addCourseDialog(courses);
           },
         ),
       ],
@@ -199,7 +200,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future _addCourseDialog() async {
+  Future _addCourseDialog(Map<String, int> currentCourses) async {
     final courseController = TextEditingController();
 
     return showDialog(
@@ -222,13 +223,24 @@ class _ProfilePageState extends State<ProfilePage> {
             TextButton(
               child: const Text('Save'),
               onPressed: () {
-                // SAVE new course
+                DataService dataService = Provider.of<DataService>(context, listen: false);
+
+                if (currentCourses.containsKey(courseController.text)) {
+                  // don't add course, tell user its already added
+                } else {
+                  currentCourses[courseController.text] = 20;
+                  dataService.updateCurrentUser({'courses': currentCourses});
+                }
+
                 Navigator.of(context).pop();
-              }
-            )
+              },
+            ),
           ],
         );
       }
+    );
+  }
+
   Future _showGradeDialog() async {
     return showDialog(
       context: context,

@@ -32,6 +32,9 @@ class AppUser {
   String name;
   String major;
   int classification;
+  String? profilePic;
+
+  Map<String, int> courses;
 
   String get classificationName => classifications[classification] ?? 'Unknown';
 
@@ -40,6 +43,8 @@ class AppUser {
     required this.name,
     required this.major,
     required this.classification,
+    required this.profilePic,
+    required this.courses,
   });
 
   Map<String, dynamic> toJson() {
@@ -48,6 +53,8 @@ class AppUser {
       'name': name,
       'major': major,
       'classification': classification,
+      'profile-pic': profilePic,
+      'courses': courses,
     };
   }
 
@@ -57,6 +64,10 @@ class AppUser {
       name: json['name'] as String,
       major: json['major'] as String,
       classification: json['classification'] as int,
+      profilePic: json['profile-pic'] as String?,
+      courses: (json['courses'] as Map<String, dynamic>).map((key, value) {
+        return MapEntry(key, value as int);
+      }),
     );
   }
 

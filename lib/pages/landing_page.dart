@@ -24,7 +24,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     User? authUser = context.watch<User?>();
-    DataService dataService = context.watch<DataService>();
+    DataService dataService = Provider.of<DataService>(context, listen: false);
     dataService.setCurrentUser(authUser?.uid);
 
     if (authUser == null) {
