@@ -19,9 +19,7 @@ class _CoursePageState extends State<CoursePage> {
   @override
   Widget build(BuildContext context) {
     if (tutors == null) {
-      DataService dataService =
-          Provider.of<DataService>(context, listen: false);
-      _getCourseTutors(dataService);
+      _getCourseTutors();
     }
 
     return Scaffold(
@@ -137,7 +135,11 @@ class _CoursePageState extends State<CoursePage> {
     }
   }
 
-  Future _getCourseTutors(DataService dataService) async {
+  Future _getCourseTutors() async {
+    DataService dataService =
+          Provider.of<DataService>(context, listen: false);
+    AppUser? currentUser = Provider.of<AppUser?>(context, listen: false);
+
     tutors = await dataService.getTutorsForCourse(widget.course);
     Future.delayed(const Duration(milliseconds: 200), () {
       setState(() {});
