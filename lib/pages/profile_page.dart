@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utdtutors/models/app_user.dart';
 import 'package:utdtutors/services/auth_service.dart';
+import 'package:utdtutors/widgets/round_dropdown_field.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -21,6 +22,8 @@ class _ProfilePageState extends State<ProfilePage> {
     'GOVT 2306': false,
     'ECS 1100': false,
   };
+
+  final gradeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +137,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 value: profileCourses.values.elementAt(index),
                 onChanged: (bool value) {
                   setState(() {
+                    if (!profileCourses.values.elementAt(index)) {
+                      _showGradeDialog();
+                    }
                     profileCourses[profileCourses.keys.elementAt(index)] =
                         value;
                   });
@@ -162,7 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _showInfoDialog() async {
-    return showDialog<void>(
+    return showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -172,6 +178,31 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: [
             TextButton(
               child: const Text('Okay'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showGradeDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('What Grade Did You Get?'),
+          content: RoundDropdownField(
+            label: 'Grade',
+            itemMap: AppUser.grades,
+            prefixIcon: const Icon(Icons.school),
+            controller: gradeController,
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Confirm'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
