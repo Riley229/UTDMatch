@@ -69,10 +69,12 @@ class _CoursePageState extends State<CoursePage> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
+              const Divider(),
               _findATutorFor(),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               _course(),
-              const SizedBox(height: 64),
+              const Divider(),
+              const SizedBox(height: 8),
               _tutors(),
             ],
           ),
@@ -82,7 +84,7 @@ class _CoursePageState extends State<CoursePage> {
   }
 
   Widget _findATutorFor() {
-    return Text('FInding A Tutor For',
+    return Text('Finding A Tutor For',
         style: Theme.of(context).textTheme.headline5);
   }
 

@@ -10,19 +10,11 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-List profileCourses = [
-  'CS 1200',
-  'CS 2305',
-  'CS 2337',
-  'RHET 1302',
-  'GOVT 2306',
-  'ECS 1100',
-];
-
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
         child: Center(
@@ -31,8 +23,10 @@ class _HomePageState extends State<HomePage> {
               return Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
+                  const Divider(),
                   _findTutors(),
                   _selectACourse(),
+                  const Divider(),
                   _courses(appUser?.courses ?? {}),
                 ],
               );

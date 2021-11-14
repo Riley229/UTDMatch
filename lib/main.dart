@@ -60,6 +60,8 @@ class MyApp extends StatelessWidget {
             ).copyWith(
               secondary: const Color(0xFF2DE4C5),
               onSecondary: Colors.white,
+              surface: const Color(0xFF373B47),
+              onSurface: Colors.white,
             ),
             scaffoldBackgroundColor: const Color(0xFF2A2D37),
             textTheme: const TextTheme(

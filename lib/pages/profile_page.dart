@@ -37,11 +37,12 @@ class _ProfilePageState extends State<ProfilePage> {
               builder: (context, appUser, child) {
                 return Column(
                   children: [
-                    _profileImage(),
                     const Divider(),
                     _profileName(appUser?.name ?? ''),
                     _profileMajor(appUser?.major ?? ''),
                     _profileClassification(appUser?.classificationName ?? ''),
+                    const Divider(),
+                    _profileImage(),
                     const Divider(),
                     _courses(appUser?.courses ?? {}),
                     const Divider(),
