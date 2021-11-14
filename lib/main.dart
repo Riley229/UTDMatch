@@ -49,64 +49,68 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'UTD Match',
         theme: ThemeData(
-          primaryColor: const Color(0xFF2DE4C5),
-          primarySwatch: _createMaterialColor(const Color(0xFF2DE4C5)),
-          colorScheme: ColorScheme.fromSwatch(
-            brightness: Brightness.dark,
-            primarySwatch: _createMaterialColor(
-              const Color(0xFF2DE4C5),
-            ),
-            errorColor: Colors.orange,
-          ).copyWith(
-            secondary: const Color(0xFF2DE4C5),
-            onSecondary: Colors.white,
-          ),
-          scaffoldBackgroundColor: const Color(0xFF2A2D37),
-          textTheme: const TextTheme(
-            headline1: TextStyle(fontSize: 50, fontWeight: FontWeight.w700),
-            headline2: TextStyle(fontSize: 45, fontWeight: FontWeight.w500),
-            headline3: TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
-            headline4: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
-            subtitle1: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.w300), //Text Form Fields
-            subtitle2: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
-          ).apply(bodyColor: Colors.white, displayColor: Colors.white),
-          inputDecorationTheme: const InputDecorationTheme(
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(100),
+            primaryColor: const Color(0xFF2DE4C5),
+            primarySwatch: _createMaterialColor(const Color(0xFF2DE4C5)),
+            colorScheme: ColorScheme.fromSwatch(
+              brightness: Brightness.dark,
+              primarySwatch: _createMaterialColor(
+                const Color(0xFF2DE4C5),
               ),
-              borderSide: BorderSide(color: Colors.orange),
+              errorColor: Colors.orange,
+            ).copyWith(
+              secondary: const Color(0xFF2DE4C5),
+              onSecondary: Colors.white,
             ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(100),
+            scaffoldBackgroundColor: const Color(0xFF2A2D37),
+            textTheme: const TextTheme(
+              headline1: TextStyle(fontSize: 50, fontWeight: FontWeight.w700),
+              headline2: TextStyle(fontSize: 45, fontWeight: FontWeight.w500),
+              headline3: TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
+              headline4: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+              subtitle1: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.w300), //Text Form Fields
+              subtitle2: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+            ).apply(bodyColor: Colors.white, displayColor: Colors.white),
+            inputDecorationTheme: const InputDecorationTheme(
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(100),
+                ),
+                borderSide: BorderSide(color: Colors.orange),
               ),
-              borderSide: BorderSide(color: Colors.orange),
-            ),
-            errorStyle: TextStyle(height: 0, color: Colors.orange),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(100),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(100),
+                ),
+                borderSide: BorderSide(color: Colors.orange),
+              ),
+              errorStyle: TextStyle(height: 0, color: Colors.orange),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(100),
+                ),
               ),
             ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              elevation: 0,
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                padding: const EdgeInsets.all(16),
+                textStyle:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+            ),
+            dividerTheme: const DividerThemeData(
+              thickness: 3,
+              space: 64,
+            ),
+            dialogTheme: DialogTheme(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100),
+                borderRadius: BorderRadius.circular(20),
               ),
-              padding: const EdgeInsets.all(16),
-              textStyle:
-                  const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-            ),
-          ),
-          dividerTheme: const DividerThemeData(
-            thickness: 3,
-            space: 64,
-          ),
-        ),
+            )),
       ),
     );
   }
