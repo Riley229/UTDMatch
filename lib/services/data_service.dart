@@ -103,7 +103,7 @@ class DataService {
         }
       }
     });
-    print(tutors);
+    
     return tutors;
   }
 
