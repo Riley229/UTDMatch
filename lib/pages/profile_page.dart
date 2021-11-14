@@ -13,14 +13,14 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final profileImageUrl =
       'http://i.ebayimg.com/images/g/Tw4AAOxyTjNSgMig/s-l500.jpg';
-  List profileCourses = [
-    'CS 1200',
-    'CS 2305',
-    'CS 2337',
-    'RHET 1302',
-    'GOVT 2306',
-    'ECS 1100',
-  ];
+  Map<String, bool> profileCourses = {
+    'CS 1200': false,
+    'CS 2305': false,
+    'CS 2337': false,
+    'RHET 1302': false,
+    'GOVT 2306': false,
+    'ECS 1100': false,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -77,15 +77,38 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _courses() {
     return Column(
       children: [
-        Text('Courses', style: Theme.of(context).textTheme.headline3),
+        ListTile(
+          title: Text('Courses', style: Theme.of(context).textTheme.headline3),
+          trailing: IconButton(
+            icon: const Icon(Icons.info),
+            onPressed: () {
+              _showInfoDialog();
+            },
+            padding: EdgeInsets.zero,
+          ),
+          contentPadding: const EdgeInsets.only(right: 8),
+        ),
         ListView.builder(
           shrinkWrap: true,
+          padding: EdgeInsets.zero,
           physics: const ClampingScrollPhysics(),
           itemCount: profileCourses.length,
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
               leading: const Icon(Icons.book),
-              title: Text(profileCourses[index]),
+              title: Text(
+                profileCourses.keys.elementAt(index),
+              ),
+              trailing: Switch(
+                value: profileCourses.values.elementAt(index),
+                onChanged: (bool value) {
+                  setState(() {
+                    profileCourses[profileCourses.keys.elementAt(index)] =
+                        value;
+                  });
+                },
+              ),
+              contentPadding: EdgeInsets.zero,
             );
           },
         ),
@@ -104,6 +127,27 @@ class _ProfilePageState extends State<ProfilePage> {
           authService.signOut();
         },
       ),
+    );
+  }
+
+  Future<void> _showInfoDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Course Toggle'),
+          content: const Text(
+              'Toggle a course to be available as a tutor for it \n\nOnly tutor if you received a B+ or better'),
+          actions: [
+            TextButton(
+              child: const Text('Okay'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
