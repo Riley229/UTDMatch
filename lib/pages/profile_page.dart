@@ -23,8 +23,6 @@ class _ProfilePageState extends State<ProfilePage> {
     'ECS 1100': false,
   };
 
-  final gradeController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,9 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 value: profileCourses.values.elementAt(index),
                 onChanged: (bool value) {
                   setState(() {
-                    if (!profileCourses.values.elementAt(index)) {
-                      _showGradeDialog();
-                    }
+                    _showGradeDialog();
                     profileCourses[profileCourses.keys.elementAt(index)] =
                         value;
                   });
@@ -188,28 +184,50 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<void> _showGradeDialog() async {
-    return showDialog(
+  Future<bool> _showGradeDialog() async {
+    final gradeController = TextEditingController();
+    bool confirmed = false;
+    bool qualified = false;
+
+    showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('What Grade Did You Get?'),
-          content: RoundDropdownField(
-            label: 'Grade',
-            itemMap: AppUser.grades,
-            prefixIcon: const Icon(Icons.school),
-            controller: gradeController,
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Confirm'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: confirmed ? null : const Text('What Grade Did You Get?'),
+            content: confirmed
+                ? const Text('You Need A B+ Or Higher To Be Eligible To Tutor')
+                : RoundDropdownField(
+                    label: 'Grade',
+                    itemMap: AppUser.grades,
+                    prefixIcon: const Icon(Icons.school),
+                    controller: gradeController,
+                  ),
+            actions: [
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              if (!confirmed)
+                TextButton(
+                  child: const Text('Confirm'),
+                  onPressed: () {
+                    setState(() {
+                      qualified = true;
+                      confirmed = true;
+                    });
+                    if (int.tryParse(gradeController.text)! < 4) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                ),
+            ],
+          );
+        });
       },
     );
+    return qualified;
   }
 }
