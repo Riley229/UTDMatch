@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:utdtutors/pages/landing_page.dart';
-import 'package:utdtutors/pages/profile_page.dart';
 import 'package:utdtutors/services/auth_service.dart';
 import 'package:utdtutors/services/data_service.dart';
 
