@@ -42,7 +42,9 @@ class AppUser {
   List<String> tutors;
 
   String get classificationName => classifications[classification] ?? 'Unknown';
-  Widget get avatar => getAvatar(profilePic, name);
+  Widget avatar({double radius = 128}) {
+    return getAvatar(profilePic, name, radius);
+  }
 
   AppUser({
     required this.id,
@@ -89,7 +91,7 @@ class AppUser {
     return user;
   }
 
-  static Widget getAvatar(String? imagePath, String name) {
+  static Widget getAvatar(String? imagePath, String name, double radius) {
     dynamic image;
 
     if (imagePath != null && imagePath.isNotEmpty) {
@@ -102,13 +104,13 @@ class AppUser {
     return (image != null)
         ? CircleAvatar(
             backgroundImage: image,
-            radius: 128,
+            radius: radius,
           )
         : CircleAvatar(
             backgroundColor: const Color(0xFF2DE4C5),
-            child: Text(name.characters.first,
-                style: const TextStyle(fontSize: 128)),
-            radius: 128,
+            child:
+                Text(name.characters.first, style: TextStyle(fontSize: radius)),
+            radius: radius,
           );
   }
 }
