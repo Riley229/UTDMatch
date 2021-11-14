@@ -65,18 +65,22 @@ class _CoursePageState extends State<CoursePage> {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              const Divider(),
-              _findATutorFor(),
-              const SizedBox(height: 8),
-              _course(),
-              const Divider(),
-              const SizedBox(height: 8),
-              _tutors(),
-            ],
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const SizedBox(height: 64),
+                const Divider(),
+                _findATutorFor(),
+                const SizedBox(height: 8),
+                _course(),
+                const Divider(),
+                const SizedBox(height: 8),
+                _tutors(),
+                const SizedBox(height: 64),
+              ],
+            ),
           ),
         ),
       ),

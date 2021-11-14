@@ -47,25 +47,27 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _courses(Map<String, int> courses) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
-      itemCount: courses.length,
-      itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          leading: const Icon(Icons.book),
-          title: Text(courses.keys.elementAt(index)),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    CoursePage(course: courses.keys.elementAt(index)),
-              ),
-            );
-          },
-        );
-      },
+    return Expanded(
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        itemCount: courses.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            leading: const Icon(Icons.book),
+            title: Text(courses.keys.elementAt(index)),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      CoursePage(course: courses.keys.elementAt(index)),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
