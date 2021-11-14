@@ -34,6 +34,9 @@ class AppUser {
   int classification;
   String? profilePic;
 
+  bool isSwipedOff = false;
+  bool isLiked = false;
+
   Map<String, int> courses;
 
   String get classificationName => classifications[classification] ?? 'Unknown';

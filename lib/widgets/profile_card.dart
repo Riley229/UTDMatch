@@ -36,7 +36,8 @@ class ProfileCard extends StatelessWidget {
                   BoxShadow(color: Colors.black12),
                 ],
                 gradient: const LinearGradient(
-                  colors: [Colors.transparent, Colors.black45],
+                  colors: [Colors.transparent, Colors.black54],
+                  stops: [0, .9],
                   begin: Alignment.center,
                   end: Alignment.bottomCenter,
                 ),

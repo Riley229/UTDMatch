@@ -63,27 +63,52 @@ class _CoursePageState extends State<CoursePage> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                const SizedBox(height: 64),
-                const Divider(),
-                _findATutorFor(),
-                const SizedBox(height: 8),
-                _course(),
-                const Divider(),
-                const SizedBox(height: 8),
-                _tutors(),
-                const SizedBox(height: 64),
-              ],
-            ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const SizedBox(height: 64),
+              const Divider(),
+              _findATutorFor(),
+              const SizedBox(height: 8),
+              _course(),
+              _likeDislikeDivider(),
+              const SizedBox(height: 8),
+              _tutors(),
+              const SizedBox(height: 64),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _likeDislikeDivider() {
+    return Row(
+      children: [
+        Text(
+          'Dislike',
+          style: Theme.of(context)
+              .textTheme
+              .headline5!
+              .copyWith(color: Colors.red.shade300),
+        ),
+        const Expanded(
+          child: Divider(
+            indent: 16,
+            endIndent: 16,
+          ),
+        ),
+        Text(
+          '    Like',
+          style: Theme.of(context)
+              .textTheme
+              .headline5!
+              .copyWith(color: Colors.green.shade300),
+        ),
+      ],
     );
   }
 
@@ -98,7 +123,8 @@ class _CoursePageState extends State<CoursePage> {
 
   Widget _tutors() {
     return (tutors == null || tutors.isEmpty)
-        ? Center(
+        ? Padding(
+            padding: const EdgeInsets.only(top: 128),
             child: Text('No Tutors Available',
                 style: Theme.of(context).textTheme.headline4),
           )
@@ -114,8 +140,20 @@ class _CoursePageState extends State<CoursePage> {
         feedback: Material(
             type: MaterialType.transparency, child: ProfileCard(user: user)),
         childWhenDragging: Container(),
+        onDragEnd: (details) => _onDragEnd(details, user),
       ),
     );
+  }
+
+  void _onDragEnd(DraggableDetails details, AppUser tutor) {
+    const minimumDrag = 100;
+    if (details.offset.dx > minimumDrag) {
+      tutor.isSwipedOff = true;
+      setState(() => tutors.remove(tutor));
+    } else if (details.offset.dx < -minimumDrag) {
+      tutor.isLiked = true;
+      setState(() => tutors.remove(tutor));
+    }
   }
 
   Future _getCourseTutors(DataService dataService) async {
