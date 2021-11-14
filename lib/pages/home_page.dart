@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:utdtutors/models/app_user.dart';
 import 'package:utdtutors/pages/course_page.dart';
 import 'package:utdtutors/services/data_service.dart';
+import 'package:utdtutors/widgets/profile_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -48,6 +49,45 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future _showInfoDialog(AppUser user) async {
+    final size = MediaQuery.of(context).size;
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          contentPadding: EdgeInsets.zero,
+          titlePadding: EdgeInsets.zero,
+          insetPadding: EdgeInsets.zero,
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: size.height * .6,
+                child: ProfileCard(
+                  user: user,
+                ),
+              ),
+              Text('Email: ${user.email}',
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w300))
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Okay'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _findTutors() {
     return Text('Find Tutors', style: Theme.of(context).textTheme.headline2);
   }
@@ -72,7 +112,9 @@ class _HomePageState extends State<HomePage> {
           leading: tutors.elementAt(index).avatar(radius: 24),
           title: Text(tutors.elementAt(index).name),
           subtitle: Text(tutors.elementAt(index).major),
-          onTap: () {},
+          onTap: () async {
+            _showInfoDialog(tutors.elementAt(index));
+          },
         );
       },
     );
@@ -116,6 +158,7 @@ class _HomePageState extends State<HomePage> {
 
     if (currentUser != null) {
       tutors = await dataService.getTutorsFromList(currentUser.tutors);
+      setState(() {});
     }
 
     Future.delayed(const Duration(milliseconds: 200), () {

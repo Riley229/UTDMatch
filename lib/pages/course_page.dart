@@ -16,6 +16,8 @@ class CoursePage extends StatefulWidget {
 class _CoursePageState extends State<CoursePage> {
   List<AppUser>? tutors;
 
+  Color? backgroundColor;
+
   @override
   Widget build(BuildContext context) {
     if (tutors == null) {
@@ -28,6 +30,8 @@ class _CoursePageState extends State<CoursePage> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
+      backgroundColor:
+          backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: SingleChildScrollView(
@@ -129,18 +133,30 @@ class _CoursePageState extends State<CoursePage> {
         dataService.updateCurrentUser({'tutors': currentUser.tutors});
       }
 
-      setState(() => tutors!.remove(tutor));
+      setState(() {
+        tutors!.remove(tutor);
+        backgroundColor = Colors.green.shade100;
+      });
+      Future.delayed(const Duration(milliseconds: 500), () {
+        backgroundColor = null;
+      });
     } else if (details.offset.dx < -minimumDrag) {
-      setState(() => tutors!.remove(tutor));
+      setState(() {
+        tutors!.remove(tutor);
+        backgroundColor = Colors.red.shade100;
+      });
+      Future.delayed(const Duration(milliseconds: 500), () {
+        backgroundColor = null;
+      });
     }
   }
 
   Future _getCourseTutors() async {
-    DataService dataService =
-          Provider.of<DataService>(context, listen: false);
+    DataService dataService = Provider.of<DataService>(context, listen: false);
     AppUser? currentUser = Provider.of<AppUser?>(context, listen: false);
 
-    List<AppUser> courseTutors = await dataService.getTutorsForCourse(widget.course);
+    List<AppUser> courseTutors =
+        await dataService.getTutorsForCourse(widget.course);
     Future.delayed(const Duration(milliseconds: 200), () {
       tutors = [];
       courseTutors.forEach((tutor) {
