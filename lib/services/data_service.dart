@@ -43,6 +43,7 @@ class DataService {
       'major': major,
       'classification': classification,
       'courses': {},
+      'tutors': [],
     });
   }
 
@@ -76,7 +77,8 @@ class DataService {
     if (currentUser == null) return;
 
     String imageUrl = '';
-    Reference imageRef = _profilePics.child(currentUser!.id + '.' + image.path.split('.').last);
+    Reference imageRef =
+        _profilePics.child(currentUser!.id + '.' + image.path.split('.').last);
     UploadTask uploadTask = imageRef.putFile(image);
 
     await uploadTask.whenComplete(() async {
@@ -92,14 +94,24 @@ class DataService {
     _userCollection
         .where('courses.$courseName', isLessThan: 4)
         .get()
-        .then((query) => {
-              for (var document in query.docs)
-                {
-                  if (document.id != currentUser?.id)
-                    tutors.add(AppUser.fromFirestore(document))
-                }
-            });
+        .then((query) {
+      for (var document in query.docs) {
+        if (document.id != currentUser?.id) {
+          tutors.add(AppUser.fromFirestore(document));
+        }
+      }
+    });
 
     return tutors;
+  }
+
+  Future getTutorsFromList(List<String> tutorIds) async {
+    List<AppUser> tutors = [];
+
+    _userCollection.where('id', whereIn: tutorIds).get().then((query) {
+      for (var document in query.docs) {
+        tutors.add(AppUser.fromFirestore(document));
+      }
+    });
   }
 }

@@ -96,6 +96,14 @@ class ProfileCard extends StatelessWidget {
   }
 
   Widget _courses(BuildContext context) {
+    List<String> masteredCourses = [];
+
+    user.courses.forEach((key, value) {
+      if (value < 4) {
+        masteredCourses.add(key);
+      }
+    });
+
     return Column(
       children: [
         Text(
@@ -107,13 +115,13 @@ class ProfileCard extends StatelessWidget {
           alignment: WrapAlignment.center,
           direction: Axis.horizontal,
           children: List.generate(
-            user.courses.length,
+            masteredCourses.length,
             (index) {
               return Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Text(user.courses.keys.elementAt(index),
+                child: Text(masteredCourses[index],
                     style:
-                        TextStyle(fontSize: 15, fontWeight: FontWeight.w200)),
+                        const TextStyle(fontSize: 15, fontWeight: FontWeight.w200)),
               );
             },
           ),

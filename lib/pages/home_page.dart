@@ -71,20 +71,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _courses(Map<String, int> courses) {
+    List<String> unmasteredCourses = [];
+
+    courses.forEach((key, value) {
+      if (value == 20) {
+        unmasteredCourses.add(key);
+      }
+    });
+
     return ListView.builder(
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
-      itemCount: courses.length,
+      itemCount: unmasteredCourses.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
           leading: const Icon(Icons.book),
-          title: Text(courses.keys.elementAt(index)),
+          title: Text(unmasteredCourses.elementAt(index)),
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    CoursePage(course: courses.keys.elementAt(index)),
+                    CoursePage(course: unmasteredCourses.elementAt(index)),
               ),
             );
           },
