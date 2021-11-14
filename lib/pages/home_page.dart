@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utdtutors/models/app_user.dart';
 import 'package:utdtutors/pages/course_page.dart';
+import 'package:utdtutors/services/data_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,9 +12,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<AppUser>? tutors;
+
   @override
   Widget build(BuildContext context) {
-    List<AppUser> tutors = const [];
+    if (tutors == null) {
+      _getSavedTutors();
+    }
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -25,9 +30,9 @@ class _HomePageState extends State<HomePage> {
               return Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  if (tutors.isNotEmpty) const Divider(),
-                  if (tutors.isNotEmpty) _currentTutors(),
-                  if (tutors.isNotEmpty) _tutors(tutors),
+                  if (tutors != null && tutors!.isNotEmpty) const Divider(),
+                  if (tutors != null && tutors!.isNotEmpty) _currentTutors(),
+                  if (tutors != null && tutors!.isNotEmpty) _tutors(tutors!),
                   const Divider(),
                   _findTutors(),
                   _selectACourse(),
@@ -86,18 +91,31 @@ class _HomePageState extends State<HomePage> {
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
           leading: const Icon(Icons.book),
-          title: Text(unmasteredCourses.elementAt(index)),
+          title: Text(unmasteredCourses[index]),
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    CoursePage(course: unmasteredCourses.elementAt(index)),
+                    CoursePage(course: unmasteredCourses[index]),
               ),
             );
           },
         );
       },
     );
+  }
+
+  Future _getSavedTutors() async {
+    DataService dataService = Provider.of<DataService>(context, listen: false);
+    AppUser? currentUser = Provider.of<AppUser?>(context, listen: false);
+
+    if (currentUser != null) {
+      tutors = await dataService.getTutorsFromList(currentUser.tutors);
+    }
+
+    Future.delayed(const Duration(milliseconds: 200), () {
+      setState(() {});
+    });
   }
 }

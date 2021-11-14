@@ -113,5 +113,7 @@ class DataService {
         tutors.add(AppUser.fromFirestore(document));
       }
     });
+
+    return tutors;
   }
 }
