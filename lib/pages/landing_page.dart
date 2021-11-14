@@ -47,6 +47,7 @@ class _LandingPageState extends State<LandingPage> {
               currentIndex: _selectedIndex,
               selectedItemColor: Theme.of(context).colorScheme.primary,
               onTap: (index) => setState(() => _selectedIndex = index),
+              backgroundColor: const Color(0xFF2A2D37),
             )
           : null,
     );

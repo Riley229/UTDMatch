@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:utdtutors/pages/course_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -54,7 +55,14 @@ class _HomePageState extends State<HomePage> {
         return ListTile(
           leading: const Icon(Icons.book),
           title: Text(profileCourses[index]),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CoursePage(course: profileCourses[index]),
+              ),
+            );
+          },
         );
       },
     );
