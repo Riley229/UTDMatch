@@ -36,6 +36,7 @@ class AppUser {
   String name;
   String major;
   int classification;
+  String email;
   String? profilePic;
 
   Map<String, int> courses;
@@ -51,6 +52,7 @@ class AppUser {
     required this.name,
     required this.major,
     required this.classification,
+    required this.email,
     required this.profilePic,
     required this.courses,
     required this.tutors,
@@ -62,6 +64,7 @@ class AppUser {
       'name': name,
       'major': major,
       'classification': classification,
+      'email': email,
       'profile-pic': profilePic,
       'courses': courses,
       'tutors': tutors,
@@ -74,6 +77,7 @@ class AppUser {
       name: json['name'] as String,
       major: json['major'] as String,
       classification: json['classification'] as int,
+      email: json['email'] as String,
       profilePic: json['profile-pic'] as String?,
       courses: (json['courses'] as Map<String, dynamic>).map((key, value) {
         return MapEntry(key, value as int);
