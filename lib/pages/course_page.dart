@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:utdtutors/models/app_user.dart';
+import 'package:utdtutors/services/data_service.dart';
 
 class CoursePage extends StatefulWidget {
-  const CoursePage({Key? key, required this.course}) : super(key: key);
-
   final String course;
+
+  const CoursePage({Key? key, required this.course}) : super(key: key);
 
   @override
   State<CoursePage> createState() => _CoursePageState();
 }
 
 class _CoursePageState extends State<CoursePage> {
-  final List<AppUser> tutors = const [];
+  List<AppUser>? tutors;
 
   @override
   Widget build(BuildContext context) {
+    if (tutors == null) {
+      DataService dataService = Provider.of<DataService>(context, listen: false);
+      _getCourseTutors(dataService);
+    }
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -41,11 +48,16 @@ class _CoursePageState extends State<CoursePage> {
   }
 
   Widget _tutors() {
-    return tutors.isEmpty
+    return (tutors == null || tutors!.isEmpty)
         ? Center(
             child: Text('No Tutors Available',
                 style: Theme.of(context).textTheme.headline3),
           )
         : Container();
+  }
+
+  Future _getCourseTutors(DataService dataService) async {
+    tutors = await dataService.getTutorsForCourse(widget.course);
+    setState(() {});
   }
 }

@@ -69,11 +69,12 @@ class DataService {
 
     _userCollection
         .where('courses.$courseName', isLessThan: 4)
-        .where('id', isNotEqualTo: currentUser?.id ?? '')
         .get()
         .then((query) => {
-              for (var document in query.docs)
-                tutors.add(AppUser.fromFirestore(document))
+              for (var document in query.docs) {
+                  if (document.id != currentUser?.id)
+                    tutors.add(AppUser.fromFirestore(document))
+                }
             });
 
     return tutors;
