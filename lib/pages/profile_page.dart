@@ -126,23 +126,24 @@ class _ProfilePageState extends State<ProfilePage> {
           shrinkWrap: true,
           padding: EdgeInsets.zero,
           physics: const ClampingScrollPhysics(),
-          itemCount: profileCourses.length,
+          itemCount: courses.length,
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
               leading: const Icon(Icons.book),
               title: Text(
-                profileCourses.keys.elementAt(index),
+                courses.keys.elementAt(index),
               ),
               trailing: Switch(
-                value: profileCourses.values.elementAt(index),
+                value: courses.values.elementAt(index) < 4,
                 onChanged: (bool newValue) async {
+                  int intValue = 20;
+
                   if (newValue == true) {
-                    newValue = await _showGradeDialog();
+                    intValue = await _showGradeDialog();
                   }
 
-                  setState(() =>
-                      profileCourses[profileCourses.keys.elementAt(index)] =
-                          newValue);
+                  setState(
+                      () => courses[courses.keys.elementAt(index)] = intValue);
                 },
               ),
               contentPadding: EdgeInsets.zero,
@@ -200,40 +201,49 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future _addCourseDialog(Map<String, int> currentCourses) async {
     final courseController = TextEditingController();
+    bool confirmed = false;
 
     return showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: const Text('Add Course'),
-            content: RoundTextField(
-              label: 'Course Name',
-              prefixIcon: const Icon(Icons.book),
-              controller: courseController,
-            ),
-            actions: [
-              TextButton(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
-              TextButton(
-                child: const Text('Save'),
-                onPressed: () {
-                  DataService dataService =
-                      Provider.of<DataService>(context, listen: false);
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: confirmed ? null : const Text('Add Course'),
+                content: confirmed
+                    ? const Text(
+                        'You\'ve already added this course.')
+                    : RoundTextField(
+                        label: 'Course Name',
+                        prefixIcon: const Icon(Icons.book),
+                        controller: courseController,
+                      ),
+                actions: [
+                  TextButton(
+                      child: const Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                  if (!confirmed)
+                    TextButton(
+                      child: const Text('Save'),
+                      onPressed: () {
+                        DataService dataService =
+                            Provider.of<DataService>(context, listen: false);
 
-                  if (currentCourses.containsKey(courseController.text)) {
-                    // don't add course, tell user its already added
-                  } else {
-                    currentCourses[courseController.text] = 20;
-                    dataService.updateCurrentUser({'courses': currentCourses});
-                  }
-
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
+                        if (currentCourses.containsKey(courseController.text)) {
+                          setState(() => confirmed = true);
+                        } else {
+                          currentCourses[courseController.text] = 20;
+                          dataService
+                              .updateCurrentUser({'courses': currentCourses});
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
+                ],
+              );
+            },
           );
         });
   }
@@ -241,7 +251,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future _showGradeDialog() async {
     final gradeController = TextEditingController();
     bool confirmed = false;
-    bool qualified = false;
+    int gradeIndex = 20;
 
     await showDialog(
       context: context,
@@ -269,7 +279,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: const Text('Confirm'),
                   onPressed: () {
                     if ((int.tryParse(gradeController.text) ?? 20) < 4) {
-                      qualified = true;
+                      gradeIndex = int.parse(gradeController.text);
                       Navigator.of(context).pop();
                     }
 
@@ -282,6 +292,6 @@ class _ProfilePageState extends State<ProfilePage> {
       },
     );
 
-    return qualified;
+    return gradeIndex;
   }
 }
