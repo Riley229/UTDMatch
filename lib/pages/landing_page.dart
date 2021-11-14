@@ -27,6 +27,10 @@ class _LandingPageState extends State<LandingPage> {
     DataService dataService = context.watch<DataService>();
     dataService.setCurrentUser(authUser?.uid);
 
+    if (authUser == null) {
+      _selectedIndex = 1;
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
